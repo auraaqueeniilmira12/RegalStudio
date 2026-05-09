@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Admin - RegalStudio</title>
+    <link rel="stylesheet" href="../client/css/style.css">
+    <link rel="stylesheet" href="../client/css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+        .sidebar {
+            width: 280px;
+            background: var(--bg-card);
+            border-right: 1px solid var(--border-color);
+            padding: 2rem 1.5rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        .sidebar-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+        }
+        .sidebar-menu {
+            list-style: none;
+        }
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+        }
+        .sidebar-menu li a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .sidebar-menu li a:hover,
+        .sidebar-menu li a.active {
+            background: var(--primary);
+            color: white;
+        }
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+        }
+        .page-title {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .btn-add {
+            background: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: none;
+            cursor: pointer;
+        }
+        .admins-table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow-x: auto;
+            display: block;
+        }
+        .admins-table th,
+        .admins-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .btn-action {
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 0.7rem;
+            margin: 0.1rem;
+            border: none;
+        }
+        .btn-edit {
+            background: #F59E0B;
+            color: white;
+        }
+        .btn-delete {
+            background: #EF4444;
+            color: white;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.show {
+            display: flex;
+        }
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            max-width: 400px;
+            width: 90%;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.25rem;
+            font-weight: 500;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+        }
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+        }
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+            }
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                z-index: 1000;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo"><h2>RegalStudio</h2></div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="../client/index.html">Beranda</a></li>
+                <li><a href="../client/services.html">Layanan</a></li>
+                <li><a href="../client/portfolio.html">Portofolio</a></li>
+                <li><a href="../client/ebook.html">E-book</a></li>
+                <li><a href="../client/contact.html">Kontak</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="#" id="logoutAdminBtn" class="btn-primary" style="padding:0.5rem 1rem;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ADMIN PANEL -->
+    <div class="admin-container">
+        <aside class="sidebar">
+            <div class="sidebar-logo">Admin Panel</div>
+            <ul class="sidebar-menu">
+                <li><a href="index.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="profile.html" class="active"><i class="fas fa-user-circle"></i> Profil Admin</a></li>
+                <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Kelola Pesanan</a></li>
+                <li><a href="services.html"><i class="fas fa-cog"></i> Kelola Layanan</a></li>
+                <li><a href="manage-admins.html" class="active"><i class="fas fa-users-cog"></i> Kelola Admin</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="page-title">
+                <h1><i class="fas fa-users-cog"></i> Kelola Admin</h1>
+                <button class="btn-add" id="addAdminBtn"><i class="fas fa-plus"></i> Tambah Admin</button>
+            </div>
+            <div id="adminsList"></div>
+        </main>
+    </div>
+
+    <!-- MODAL TAMBAH/EDIT ADMIN -->
+    <div id="adminModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Tambah Admin</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        // Cek login admin
+        const session = JSON.parse(localStorage.getItem('regalstudio_session') || sessionStorage.getItem('regalstudio_session') || 'null');
+        if (!session || session.role !== 'admin') {
+            window.location.href = '../client/login.html';
+        }
+
+        // Data admin disimpan di localStorage dengan key 'regalstudio_admins'
+        let admins = [];
+
+        function loadAdmins() {
+            const saved = localStorage.getItem('regalstudio_admins');
+            if (saved) {
+                admins = JSON.parse(saved);
+            } else {
+                // Default admin bawaan
+                admins = [
+                    { id: 1, email: 'admin@regalstudio.id', name: 'Super Admin', password: 'admin123' }
+                ];
+                saveAdmins();
+            }
+            renderAdmins();
+        }
+
+        function saveAdmins() {
+            localStorage.setItem('regalstudio_admins', JSON.stringify(admins));
+        }
+
+        function hashPassword(password) {
+            let hash = 0;
+            for (let i = 0; i < password.length; i++) {
+                const char = password.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return hash.toString();
+        }
+
+        function renderAdmins() {
+            const container = document.getElementById('adminsList');
+            
+            if (admins.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><p>Belum ada admin</p></div>';
+                return;
+            }
+
+            let html = '<table class="admins-table"><thead><tr><th>ID</th><th>Email</th><th>Nama</th><th>Aksi</th></tr></thead><tbody>';
+            admins.forEach(admin => {
+                html += `
+                    <tr>
+                        <td>${admin.id}</td>
+                        <td>${admin.email}</td>
+                        <td>${admin.name}</td>
+                        <td>
+                            <button class="btn-action btn-edit" onclick="editAdmin(${admin.id})"><i class="fas fa-edit"></i> Edit</button>
+                            <button class="btn-action btn-delete" onclick="deleteAdmin(${admin.id})"><i class="fas fa-trash"></i> Hapus</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        function openModal(isEdit = false, admin = null) {
+            document.getElementById('modalTitle').innerText = isEdit ? 'Edit Admin' : 'Tambah Admin';
+            document.getElementById('modalBody').innerHTML = `
+                <input type="hidden" id="adminId" value="${admin?.id || ''}">
+                <div class="form-group">
+                    <label>Nama Lengkap</label>
+                    <input type="text" id="adminName" value="${admin?.name || ''}" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="adminEmail" value="${admin?.email || ''}" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="adminPassword" placeholder="${isEdit ? 'Kosongkan jika tidak diubah' : 'Masukkan password'}" ${isEdit ? '' : 'required'}>
+                </div>
+                <button class="btn-primary" onclick="saveAdmin()" style="width:100%; margin-top:1rem;">Simpan</button>
+            `;
+            document.getElementById('adminModal').classList.add('show');
+        }
+
+        function saveAdmin() {
+            const id = document.getElementById('adminId').value;
+            const name = document.getElementById('adminName').value.trim();
+            const email = document.getElementById('adminEmail').value.trim();
+            const password = document.getElementById('adminPassword').value;
+
+            if (!name || !email) {
+                alert('Nama dan Email wajib diisi!');
+                return;
+            }
+
+            if (id) {
+                // Edit existing
+                const index = admins.findIndex(a => a.id == id);
+                if (index !== -1) {
+                    admins[index].name = name;
+                    admins[index].email = email;
+                    if (password) {
+                        admins[index].password = password;
+                    }
+                }
+            } else {
+                // Add new
+                if (!password) {
+                    alert('Password wajib diisi untuk admin baru!');
+                    return;
+                }
+                // Cek email duplikat
+                if (admins.some(a => a.email === email)) {
+                    alert('Email sudah terdaftar!');
+                    return;
+                }
+                const newId = Date.now();
+                admins.push({
+                    id: newId,
+                    email: email,
+                    name: name,
+                    password: password
+                });
+            }
+
+            saveAdmins();
+            closeModal();
+            renderAdmins();
+        }
+
+        function editAdmin(id) {
+            const admin = admins.find(a => a.id === id);
+            if (admin) {
+                openModal(true, admin);
+            }
+        }
+
+        function deleteAdmin(id) {
+            if (confirm('Yakin ingin menghapus admin ini?')) {
+                admins = admins.filter(a => a.id !== id);
+                saveAdmins();
+                renderAdmins();
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('adminModal').classList.remove('show');
+        }
+
+        // Logout
+        document.getElementById('logoutAdminBtn')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('regalstudio_session');
+            sessionStorage.removeItem('regalstudio_session');
+            window.location.href = '../client/login.html';
+        });
+
+        document.getElementById('addAdminBtn')?.addEventListener('click', () => openModal(false));
+
+        loadAdmins();
+
+        window.editAdmin = editAdmin;
+        window.deleteAdmin = deleteAdmin;
+        window.saveAdmin = saveAdmin;
+        window.closeModal = closeModal;
+    </script>
+</body>
+</html>

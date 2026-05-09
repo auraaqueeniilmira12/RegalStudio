@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Checkout - RegalStudio</title>
+    
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    
+    <style>
+        .checkout-hero {
+            padding: 120px 0 40px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+            text-align: center;
+        }
+        
+        .checkout-hero h1 {
+            color: var(--white);
+            margin-bottom: 0.5rem;
+        }
+        
+        .checkout-hero p {
+            color: rgba(255,255,255,0.9);
+        }
+        
+        .checkout-container {
+            padding: 60px 0;
+        }
+        
+        .checkout-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 2rem;
+        }
+        
+        .cart-summary {
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(139, 92, 246, 0.1);
+            position: sticky;
+            top: 100px;
+        }
+        
+        .cart-summary h3 {
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--primary);
+            display: inline-block;
+        }
+        
+        .cart-items {
+            margin-bottom: 1.5rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--bg-light);
+        }
+        
+        .cart-item-info {
+            flex: 1;
+        }
+        
+        .cart-item-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .cart-item-type {
+            font-size: 0.7rem;
+            color: var(--gray);
+        }
+        
+        .cart-item-price {
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .cart-item-quantity {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.25rem;
+        }
+        
+        .qty-btn {
+            width: 25px;
+            height: 25px;
+            background: var(--bg-light);
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+        }
+        
+        .cart-total {
+            padding-top: 1rem;
+            border-top: 2px solid var(--bg-light);
+        }
+        
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+        }
+        
+        .total-row.grand-total {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--primary);
+            border-top: 1px solid var(--bg-light);
+            margin-top: 0.5rem;
+            padding-top: 1rem;
+        }
+        
+        .checkout-form {
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(139, 92, 246, 0.1);
+        }
+        
+        .checkout-form h3 {
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--primary);
+            display: inline-block;
+        }
+        
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-group label .required {
+            color: #EF4444;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 1px solid var(--gray-light);
+            border-radius: var(--radius-md);
+            background: var(--bg-white);
+            color: var(--dark);
+            font-family: inherit;
+            transition: all var(--transition-fast);
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .payment-methods {
+            margin: 1.5rem 0;
+        }
+        
+        .payment-option {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border: 1px solid var(--gray-light);
+            border-radius: var(--radius-md);
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .payment-option.selected {
+            border-color: var(--primary);
+            background: rgba(139, 92, 246, 0.05);
+        }
+        
+        .payment-option input {
+            width: auto;
+            margin: 0;
+        }
+        
+        .payment-option i {
+            font-size: 1.25rem;
+            color: var(--primary);
+        }
+        
+        .btn-checkout {
+            width: 100%;
+            justify-content: center;
+            padding: 1rem;
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .empty-cart {
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .alert {
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
+        
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            color: #EF4444;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10B981;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+        
+        .login-warning {
+            text-align: center;
+            padding: 3rem;
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .login-warning i {
+            font-size: 4rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .checkout-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <h2>RegalStudio</h2>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html">Beranda</a></li>
+                <li><a href="services.html">Layanan</a></li>
+                <li><a href="portfolio.html">Portofolio</a></li>
+                <li><a href="ebook.html">E-book</a></li>
+                <li><a href="contact.html">Kontak</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="login.html" class="btn-login"><i class="fas fa-user"></i> Masuk</a>
+                <div class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="checkout-hero">
+        <div class="container">
+            <h1><i class="fas fa-shopping-cart"></i> Checkout</h1>
+            <p>Ringkasan pesanan dan isi data diri untuk melanjutkan pembayaran</p>
+        </div>
+    </section>
+
+    <section class="checkout-container">
+        <div class="container" id="checkoutContent"></div>
+    </section>
+
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-col">
+                <h3>RegalStudio</h3>
+                <p>Solusi digital profesional untuk website, desain, edit video, writer, dan e-book berkualitas.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Layanan</h4>
+                <ul>
+                    <li><a href="service-detail.html?id=1"><i class="fas fa-code"></i> Jasa Website</a></li>
+                    <li><a href="service-detail.html?id=4"><i class="fas fa-palette"></i> Jasa Desain</a></li>
+                    <li><a href="service-detail.html?id=7"><i class="fas fa-film"></i> Jasa Edit Video</a></li>
+                    <li><a href="service-detail.html?id=10"><i class="fas fa-feather-alt"></i> Jasa Writer</a></li>
+                    <li><a href="ebook.html"><i class="fas fa-book"></i> E-book</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Perusahaan</h4>
+                <ul>
+                    <li><a href="about.html"><i class="fas fa-info-circle"></i> Tentang Kami</a></li>
+                    <li><a href="portfolio.html"><i class="fas fa-folder-open"></i> Portofolio</a></li>
+                    <li><a href="contact.html"><i class="fas fa-envelope"></i> Kontak</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Kontak</h4>
+                <ul>
+                    <li><i class="fas fa-envelope"></i> hello@regalstudio.id</li>
+                    <li><i class="fas fa-phone"></i> +62 812 3456 7890</li>
+                    <li><i class="fas fa-clock"></i> Senin - Jumat: 09.00 - 17.00</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 RegalStudio. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    
+    <script>
+        // ========== CEK LOGIN ==========
+        const session = JSON.parse(localStorage.getItem('regalstudio_session') || sessionStorage.getItem('regalstudio_session') || 'null');
+        
+        if (!session || !session.email) {
+            document.getElementById('checkoutContent').innerHTML = `
+                <div class="login-warning">
+                    <i class="fas fa-lock"></i>
+                    <h2>Harap Login Terlebih Dahulu</h2>
+                    <p>Anda harus login atau registrasi terlebih dahulu untuk melanjutkan checkout.</p>
+                    <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 2rem;">
+                        <a href="login.html?redirect=${encodeURIComponent(window.location.href)}" class="btn-primary">
+                            <i class="fas fa-sign-in-alt"></i> Login Sekarang
+                        </a>
+                        <a href="register.html?redirect=${encodeURIComponent(window.location.href)}" class="btn-secondary">
+                            <i class="fas fa-user-plus"></i> Daftar Akun
+                        </a>
+                    </div>
+                </div>
+            `;
+        } else {
+            loadCheckoutContent();
+        }
+        
+        function formatPrice(price) {
+            return 'Rp ' + price.toLocaleString('id-ID');
+        }
+        
+        function loadCheckoutContent() {
+            let cart = JSON.parse(localStorage.getItem('regalstudio_cart') || '[]');
+            const users = JSON.parse(localStorage.getItem('regalstudio_users') || '[]');
+            const user = users.find(u => u.email === session.email);
+            
+            console.log('Cart data:', cart);
+            console.log('Cart length:', cart.length);
+            
+            let subtotal = 0;
+            let cartHtml = '';
+            
+            if (!cart || cart.length === 0) {
+                cartHtml = `
+                    <div class="empty-cart">
+                        <i class="fas fa-inbox" style="font-size: 3rem; color: var(--gray);"></i>
+                        <p>Keranjang belanja Anda kosong</p>
+                        <a href="services.html" class="btn-primary" style="margin-top: 1rem; display: inline-block;">
+                            <i class="fas fa-shopping-bag"></i> Mulai Belanja
+                        </a>
+                    </div>
+                `;
+            } else {
+                cart.forEach((item, index) => {
+                    const itemTotal = item.price * (item.quantity || 1);
+                    subtotal += itemTotal;
+                    cartHtml += `
+                        <div class="cart-item">
+                            <div class="cart-item-info">
+                                <div class="cart-item-title">${escapeHtml(item.name)}</div>
+                                <div class="cart-item-type">
+                                    <i class="fas ${item.type === 'service' ? 'fa-code' : 'fa-book'}"></i> 
+                                    ${item.type === 'service' ? 'Layanan Jasa' : 'E-book Digital'}
+                                </div>
+                                <div class="cart-item-quantity">
+                                    <button class="qty-btn" onclick="updateQuantity(${index}, -1)">-</button>
+                                    <span>${item.quantity || 1}</span>
+                                    <button class="qty-btn" onclick="updateQuantity(${index}, 1)">+</button>
+                                </div>
+                            </div>
+                            <div class="cart-item-price">${formatPrice(itemTotal)}</div>
+                        </div>
+                    `;
+                });
+            }
+            
+            const grandTotal = subtotal;
+            
+            const html = `
+                <div class="checkout-grid">
+                    <div class="cart-summary">
+                        <h3><i class="fas fa-clipboard-list"></i> Ringkasan Pesanan</h3>
+                        <div id="cartItemsList" class="cart-items">${cartHtml}</div>
+                        <div class="cart-total" id="cartTotal" style="${cart.length === 0 ? 'display: none;' : 'display: block;'}">
+                            <div class="total-row">
+                                <span><i class="fas fa-receipt"></i> Subtotal:</span>
+                                <span id="subtotal">${formatPrice(subtotal)}</span>
+                            </div>
+                            <div class="total-row">
+                                <span><i class="fas fa-tag"></i> Biaya Admin:</span>
+                                <span>Rp 0</span>
+                            </div>
+                            <div class="total-row grand-total">
+                                <span><i class="fas fa-money-bill-wave"></i> Total Yang Harus Dibayar:</span>
+                                <span id="grandTotal">${formatPrice(grandTotal)}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="checkout-form">
+                        <h3><i class="fas fa-user-check"></i> Informasi Pemesan</h3>
+                        <div id="alertMessage"></div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Nama Lengkap <span class="required">*</span></label>
+                                <input type="text" id="fullname" placeholder="Nama lengkap" value="${escapeHtml(user?.name || '')}" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Email <span class="required">*</span></label>
+                                <input type="email" id="email" placeholder="email@example.com" value="${escapeHtml(session.email)}" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Nomor WhatsApp <span class="required">*</span></label>
+                                <input type="tel" id="phone" placeholder="081234567890" value="${escapeHtml(user?.phone || '')}" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Alamat (Opsional)</label>
+                                <input type="text" id="address" placeholder="Alamat lengkap" value="${escapeHtml(user?.address || '')}">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Catatan Pesanan (Opsional)</label>
+                            <textarea id="notes" rows="3" placeholder="Tulis catatan atau spesifikasi khusus..."></textarea>
+                        </div>
+                        
+                        <div class="payment-methods">
+                            <label><strong><i class="fas fa-credit-card"></i> Metode Pembayaran</strong></label>
+                            <div class="payment-option" data-method="dana">
+                                <input type="radio" name="payment_method" value="dana" id="dana" checked>
+                                <i class="fab fa-dana"></i>
+                                <label for="dana">DANA</label>
+                            </div>
+                            <div class="payment-option" data-method="ovo">
+                                <input type="radio" name="payment_method" value="ovo" id="ovo">
+                                <i class="fab fa-ovo"></i>
+                                <label for="ovo">OVO</label>
+                            </div>
+                            <div class="payment-option" data-method="gopay">
+                                <input type="radio" name="payment_method" value="gopay" id="gopay">
+                                <i class="fab fa-gopay"></i>
+                                <label for="gopay">GoPay</label>
+                            </div>
+                            <div class="payment-option" data-method="qris">
+                                <input type="radio" name="payment_method" value="qris" id="qris">
+                                <i class="fas fa-qrcode"></i>
+                                <label for="qris">QRIS</label>
+                            </div>
+                        </div>
+                        
+                        <button class="btn-primary btn-checkout" id="confirmOrderBtn">
+                            <i class="fas fa-check-circle"></i> Konfirmasi & Lanjutkan Pembayaran
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('checkoutContent').innerHTML = html;
+            
+            // Payment method selection style
+            document.querySelectorAll('.payment-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const radio = this.querySelector('input[type="radio"]');
+                    if (radio) radio.checked = true;
+                    document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+            
+            const defaultOption = document.querySelector('.payment-option');
+            if (defaultOption) defaultOption.classList.add('selected');
+            
+            // Tombol konfirmasi
+            document.getElementById('confirmOrderBtn').addEventListener('click', function() {
+                const fullname = document.getElementById('fullname').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+                const address = document.getElementById('address').value.trim();
+                const notes = document.getElementById('notes').value.trim();
+                const paymentMethod = document.querySelector('input[name="payment_method"]:checked')?.value;
+                const currentCart = JSON.parse(localStorage.getItem('regalstudio_cart') || '[]');
+                
+                if (!fullname) {
+                    showAlert('Harap isi nama lengkap!', 'error');
+                    return;
+                }
+                if (!email) {
+                    showAlert('Harap isi email!', 'error');
+                    return;
+                }
+                if (!phone) {
+                    showAlert('Harap isi nomor WhatsApp!', 'error');
+                    return;
+                }
+                if (!currentCart || currentCart.length === 0) {
+                    showAlert('Keranjang belanja kosong!', 'error');
+                    return;
+                }
+                
+                let total = 0;
+                currentCart.forEach(item => {
+                    total += item.price * (item.quantity || 1);
+                });
+                
+                const orderId = Date.now();
+                const order = {
+                    id: orderId,
+                    orderNumber: 'REG-' + orderId,
+                    customerName: fullname,
+                    customerEmail: email,
+                    customerPhone: phone,
+                    customerAddress: address,
+                    notes: notes,
+                    items: currentCart,
+                    totalPrice: total,
+                    paymentMethod: paymentMethod,
+                    status: 'pending',
+                    date: new Date().toISOString()
+                };
+                
+                let orders = JSON.parse(localStorage.getItem('regalstudio_orders') || '[]');
+                orders.push(order);
+                localStorage.setItem('regalstudio_orders', JSON.stringify(orders));
+                localStorage.removeItem('regalstudio_cart');
+                
+                showAlert('Pesanan berhasil dibuat! Mengarahkan ke halaman konfirmasi...', 'success');
+                
+                setTimeout(function() {
+                    window.location.href = 'order-confirmation.html?orderId=' + orderId + '&method=' + paymentMethod;
+                }, 1500);
+            });
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            return String(text).replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+        
+        window.updateQuantity = function(index, change) {
+            let cart = JSON.parse(localStorage.getItem('regalstudio_cart') || '[]');
+            if (cart[index]) {
+                const newQty = (cart[index].quantity || 1) + change;
+                if (newQty >= 1) {
+                    cart[index].quantity = newQty;
+                } else {
+                    cart.splice(index, 1);
+                }
+                localStorage.setItem('regalstudio_cart', JSON.stringify(cart));
+                loadCheckoutContent();
+            }
+        };
+        
+        function showAlert(message, type) {
+            const alertDiv = document.getElementById('alertMessage');
+            alertDiv.innerHTML = `<div class="alert alert-${type}"><i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${message}</div>`;
+            setTimeout(() => {
+                alertDiv.innerHTML = '';
+            }, 4000);
+        }
+    </script>
+</body>
+</html>

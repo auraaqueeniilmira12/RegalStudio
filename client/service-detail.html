@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Detail Layanan - RegalStudio</title>
+    
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    
+    <style>
+        .detail-hero {
+            padding: 120px 0 50px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+        }
+        
+        .detail-hero h1 {
+            color: var(--white);
+            margin-bottom: 0.5rem;
+        }
+        
+        .detail-hero .breadcrumb {
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 1rem;
+        }
+        
+        .detail-hero .breadcrumb a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+        }
+        
+        .detail-hero .breadcrumb a:hover {
+            color: var(--white);
+        }
+        
+        .detail-content {
+            padding: 60px 0;
+        }
+        
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 3rem;
+        }
+        
+        .service-info h2 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .service-info h2:first-child {
+            margin-top: 0;
+        }
+        
+        .service-info h2 i {
+            color: var(--primary);
+            margin-right: 0.75rem;
+        }
+        
+        .feature-list {
+            list-style: none;
+            margin: 1rem 0;
+        }
+        
+        .feature-list li {
+            padding: 0.75rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-bottom: 1px solid var(--bg-light);
+        }
+        
+        .feature-list li i {
+            color: var(--primary);
+            font-size: 1.25rem;
+            width: 25px;
+        }
+        
+        .price-box {
+            background: var(--bg-light);
+            padding: 1.5rem;
+            border-radius: var(--radius-xl);
+            margin: 1.5rem 0;
+        }
+        
+        .price-box .price {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+        
+        .price-box .price-note {
+            color: var(--gray);
+            font-size: 0.875rem;
+        }
+        
+        .info-box {
+            background: rgba(139, 92, 246, 0.05);
+            padding: 1.5rem;
+            border-radius: var(--radius-xl);
+            margin: 1.5rem 0;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .info-box p {
+            margin-bottom: 0.5rem;
+        }
+        
+        .info-box i {
+            color: var(--primary);
+            width: 25px;
+            margin-right: 0.5rem;
+        }
+        
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .step {
+            text-align: center;
+            padding: 1rem;
+            background: var(--bg-light);
+            border-radius: var(--radius-lg);
+        }
+        
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 auto 1rem;
+        }
+        
+        /* Sidebar */
+        .sidebar-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 2rem;
+            border: 1px solid rgba(139, 92, 246, 0.1);
+        }
+        
+        .sidebar-card h3 {
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--primary);
+            display: inline-block;
+        }
+        
+        .sidebar-card h3 i {
+            margin-right: 0.5rem;
+        }
+        
+        .contact-info {
+            margin-top: 1rem;
+        }
+        
+        .contact-info p {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .contact-info i {
+            width: 25px;
+            color: var(--primary);
+        }
+        
+        .contact-info a {
+            color: var(--dark);
+            text-decoration: none;
+        }
+        
+        .contact-info a:hover {
+            color: var(--primary);
+        }
+        
+        .faq-item {
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--bg-light);
+            padding-bottom: 1rem;
+        }
+        
+        .faq-question {
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .faq-question i {
+            transition: transform 0.3s;
+        }
+        
+        .faq-question.active i {
+            transform: rotate(180deg);
+        }
+        
+        .faq-answer {
+            display: none;
+            padding-top: 0.75rem;
+            color: var(--gray);
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+        
+        .faq-answer.show {
+            display: block;
+        }
+        
+        .btn-order-now {
+            width: 100%;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+        
+        .requirement-list {
+            list-style: none;
+            margin: 1rem 0;
+        }
+        
+        .requirement-list li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .requirement-list li i {
+            color: #F59E0B;
+            width: 20px;
+        }
+        
+        .benefit-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .benefit-item {
+            text-align: center;
+            padding: 1rem;
+            background: var(--bg-light);
+            border-radius: var(--radius-lg);
+        }
+        
+        .benefit-item i {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .benefit-item span {
+            font-size: 0.8rem;
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 12px 24px;
+            border-radius: 12px;
+            color: white;
+            z-index: 10000;
+            animation: slideIn 0.3s ease;
+        }
+        
+        .notification.success {
+            background: #10B981;
+        }
+        
+        .notification.error {
+            background: #EF4444;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== NAVBAR ==================== -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <h2>RegalStudio</h2>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html">Beranda</a></li>
+                <li><a href="services.html">Layanan</a></li>
+                <li><a href="portfolio.html">Portofolio</a></li>
+                <li><a href="ebook.html">E-book</a></li>
+                <li><a href="contact.html">Kontak</a></li>
+            </ul>
+            <div class="nav-actions">
+                <div class="auth-buttons">
+                    <a href="login.html" class="btn-login-nav"><i class="fas fa-sign-in-alt"></i> Masuk</a>
+                    <a href="register.html" class="btn-register-nav"><i class="fas fa-user-plus"></i> Daftar</a>
+                </div>
+                <div class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ==================== HERO SECTION ==================== -->
+    <section class="detail-hero">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="index.html">Beranda</a> / 
+                <a href="services.html">Layanan</a> / 
+                <span id="serviceCategory"></span>
+            </div>
+            <h1 id="serviceTitle">Loading...</h1>
+            <p id="serviceShortDesc"></p>
+        </div>
+    </section>
+
+    <!-- ==================== DETAIL CONTENT ==================== -->
+    <section class="detail-content">
+        <div class="container">
+            <div class="detail-grid">
+                <!-- Main Content -->
+                <div class="service-info" id="serviceInfo">
+                    <!-- Dynamic content -->
+                </div>
+                
+                <!-- Sidebar -->
+                <div class="service-sidebar">
+                    <!-- Price Box -->
+                    <div class="sidebar-card">
+                        <h3><i class="fas fa-tag"></i> Harga Layanan</h3>
+                        <div class="price-box" style="background: transparent; padding: 0;">
+                            <div class="price" id="servicePrice">Rp 0</div>
+                            <div class="price-note" id="servicePriceNote"></div>
+                        </div>
+                        <button class="btn-primary btn-order-now" id="orderNowBtn">
+                            <i class="fas fa-shopping-cart"></i> Order Sekarang
+                        </button>
+                    </div>
+                    
+                    <!-- Contact Info -->
+                    <div class="sidebar-card">
+                        <h3><i class="fas fa-headset"></i> Hubungi Kami</h3>
+                        <div class="contact-info">
+                            <p><i class="fab fa-whatsapp"></i> <a href="https://wa.me/6281234567890" target="_blank">+62 812 3456 7890</a></p>
+                            <p><i class="fas fa-envelope"></i> <a href="mailto:hello@regalstudio.id">hello@regalstudio.id</a></p>
+                            <p><i class="fas fa-clock"></i> Senin - Jumat, 09.00 - 17.00</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-col">
+                <h3>RegalStudio</h3>
+                <p>Solusi digital profesional untuk website, desain, edit video, writer, dan e-book berkualitas.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Layanan</h4>
+                <ul>
+                    <li><a href="service-detail.html?id=1"><i class="fas fa-code"></i> Jasa Website</a></li>
+                    <li><a href="service-detail.html?id=4"><i class="fas fa-palette"></i> Jasa Desain</a></li>
+                    <li><a href="service-detail.html?id=7"><i class="fas fa-film"></i> Jasa Edit Video</a></li>
+                    <li><a href="service-detail.html?id=10"><i class="fas fa-feather-alt"></i> Jasa Writer</a></li>
+                    <li><a href="ebook.html"><i class="fas fa-book"></i> E-book</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Perusahaan</h4>
+                <ul>
+                    <li><a href="about.html"><i class="fas fa-info-circle"></i> Tentang Kami</a></li>
+                    <li><a href="portfolio.html"><i class="fas fa-folder-open"></i> Portofolio</a></li>
+                    <li><a href="contact.html"><i class="fas fa-envelope"></i> Kontak</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Kontak</h4>
+                <ul>
+                    <li><i class="fas fa-envelope"></i> hello@regalstudio.id</li>
+                    <li><i class="fas fa-phone"></i> +62 812 3456 7890</li>
+                    <li><i class="fas fa-clock"></i> Senin - Jumat: 09.00 - 17.00</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 RegalStudio. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    
+    <script>
+        // Load user navbar after DOM ready
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof loadUserNavbar === 'function') {
+                loadUserNavbar();
+            }
+        });
+
+        // ========== SERVICES DATA LENGKAP ==========
+        const servicesData = [
+            { id: 1, name: "Landing Page Company Profile", category: "website", categoryName: "Website", icon: "fas fa-building",
+              description: "Halaman profesional untuk memperkenalkan perusahaan, produk, atau layanan Anda. Dilengkapi dengan desain modern, responsif, dan optimal untuk semua perangkat.",
+              longDescription: "Landing page adalah halaman website yang dirancang khusus untuk tujuan marketing dan konversi. Kami akan membuat landing page yang menarik, cepat, dan SEO friendly untuk membantu bisnis Anda mendapatkan lebih banyak leads.",
+              features: ["Responsive design (mobile, tablet, desktop)", "SEO friendly structure", "Fast loading optimization", "Animasi menarik", "Form kontak terintegrasi", "Google Maps integration", "Social media integration", "Analytics terpasang"],
+              benefits: ["Meningkatkan konversi", "Branding profesional", "SEO friendly", "Mudah dikelola"],
+              requirements: ["Konten teks (deskripsi perusahaan)", "Logo perusahaan (jika ada)", "Foto/gambar produk", "Kontak yang akan ditampilkan"],
+              price: 500000, priceNote: "mulai dari", deliveryTime: "3-5 hari kerja", revision: "2x revisi",
+              faq: [
+                  { q: "Apakah termasuk hosting dan domain?", a: "Harga di atas untuk jasa pembuatan saja. Hosting dan domain bisa dibantu daftarkan dengan biaya terpisah." },
+                  { q: "Berapa lama pengerjaan?", a: "Estimasi pengerjaan 3-5 hari kerja tergantung kompleksitas." },
+                  { q: "Apakah ada garansi?", a: "Ada garansi 30 hari untuk bug fixing setelah website live." },
+                  { q: "Apakah bisa revisi?", a: "Ya, termasuk 2x revisi. Revisi tambahan dikenakan biaya." }
+              ] },
+            { id: 2, name: "Toko Online (E-commerce)", category: "website", categoryName: "Website", icon: "fas fa-store",
+              description: "Website toko online lengkap dengan manajemen produk, keranjang belanja, dan integrasi pembayaran.",
+              longDescription: "Solusi e-commerce lengkap untuk bisnis Anda. Kelola produk, pesanan, dan pembayaran dengan mudah melalui dashboard admin yang user-friendly.",
+              features: ["Manajemen produk unlimited", "Keranjang belanja", "Integrasi payment gateway", "Laporan penjualan", "Dashboard admin", "Manajemen pelanggan", "Kupon diskon", "Ongkir otomatis"],
+              benefits: ["Jualan online 24/7", "Kelola stok mudah", "Laporan keuangan", "Integrasi berbagai payment"],
+              requirements: ["Daftar produk (nama, harga, stok)", "Deskripsi toko", "Foto produk", "Rekening bank/akun payment"],
+              price: 1500000, priceNote: "mulai dari", deliveryTime: "7-14 hari kerja", revision: "3x revisi",
+              faq: [
+                  { q: "Payment gateway apa saja yang didukung?", a: "Midtrans, Xendit, dan manual transfer." },
+                  { q: "Bisa untuk produk digital?", a: "Ya, support untuk produk fisik dan digital." },
+                  { q: "Apakah bisa custom fitur?", a: "Bisa, silakan diskusikan kebutuhan Anda." }
+              ] },
+            { id: 3, name: "Custom Web Application", category: "website", categoryName: "Website", icon: "fas fa-laptop-code",
+              description: "Aplikasi web custom sesuai kebutuhan bisnis spesifik Anda.",
+              longDescription: "Kembangkan aplikasi web sesuai dengan kebutuhan unik bisnis Anda. Mulai dari sistem inventory, HRD, hingga aplikasi internal perusahaan.",
+              features: ["Fitur sesuai kebutuhan", "Database terintegrasi", "Login multi user", "API ready", "Dashboard reporting", "Scalable architecture"],
+              benefits: ["Sesuai kebutuhan bisnis", "Efisiensi kerja", "Data terpusat", "Keamanan terjamin"],
+              requirements: ["Dokumen spesifikasi", "Flowchart proses bisnis", "Desain UI referensi (opsional)"],
+              price: 2500000, priceNote: "mulai dari", deliveryTime: "2-4 minggu", revision: "Sesuai kesepakatan",
+              faq: [{ q: "Teknologi apa yang digunakan?", a: "Node.js, Express, dan database sesuai kebutuhan." }] },
+            { id: 4, name: "Logo & Brand Identity", category: "design", categoryName: "Desain Grafis", icon: "fas fa-pen-nib",
+              description: "Desain logo unik dan identitas brand yang mencerminkan nilai bisnis Anda.",
+              longDescription: "Logo adalah wajah brand Anda. Kami akan menciptakan logo yang unik, memorable, dan mencerminkan nilai bisnis Anda.",
+              features: ["Logo + varian (warna/hitam putih)", "Palet warna brand", "Mood board", "Font recommendation", "Business card design", "Source file (AI/PSD)"],
+              benefits: ["Branding profesional", "Mudah diingat", "Konsisten", "Source file siap pakai"],
+              requirements: ["Nama brand", "Deskripsi bisnis", "Referensi moodboard (opsional)", "Warna favorit (opsional)"],
+              price: 350000, priceNote: "mulai dari", deliveryTime: "3-5 hari kerja", revision: "3x revisi",
+              faq: [{ q: "Format file apa yang diberikan?", a: "JPG, PNG, PDF, AI, EPS, dan SVG." }] },
+            { id: 5, name: "Feed Instagram & Konten Social Media", category: "design", categoryName: "Desain Grafis", icon: "fas fa-instagram",
+              description: "Desain feed Instagram aesthetic dan konten media sosial yang menarik.",
+              longDescription: "Tingkatkan engagement media sosial Anda dengan desain feed Instagram yang aesthetic dan konten yang menarik perhatian audiens.",
+              features: ["Template feed 9 grid", "Story design", "Highlight cover", "Carousel post", "Quote template", "Color theme"],
+              benefits: ["Feed aesthetic", "Branding konsisten", "Engagement naik", "Template reusable"],
+              requirements: ["Warna brand", "Link Instagram", "Konten yang akan diposting", "Tema yang diinginkan"],
+              price: 250000, priceNote: "per 10 post", deliveryTime: "2-3 hari kerja", revision: "2x revisi",
+              faq: [{ q: "Bisa request tema tertentu?", a: "Bisa, silakan kirimkan referensi moodboard." }] },
+            { id: 6, name: "Poster, Banner & Packaging", category: "design", categoryName: "Desain Grafis", icon: "fas fa-paintbrush",
+              description: "Desain poster, banner event, dan packaging produk yang eye-catching.",
+              longDescription: "Perkuat branding visual Anda dengan desain poster, banner event, dan packaging produk yang profesional dan eye-catching.",
+              features: ["Print ready (CMYK)", "High resolution", "Multiple revision", "Source file included", "Mockup preview", "Pantone color reference"],
+              benefits: ["Siap cetak", "High resolution", "Murah dan profesional", "Cepat pengerjaan"],
+              requirements: ["Konten teks", "Logo brand", "Ukuran yang diinginkan", "Referensi desain"],
+              price: 200000, priceNote: "mulai dari", deliveryTime: "2-4 hari kerja", revision: "2x revisi",
+              faq: [{ q: "Apakah siap cetak?", a: "Ya, file diberikan dalam format siap cetak." }] },
+            { id: 7, name: "Video Promosi & Iklan", category: "video", categoryName: "Edit Video", icon: "fas fa-play-circle",
+              description: "Video promosi singkat untuk produk, brand, atau event Anda.",
+              longDescription: "Tingkatkan penjualan dengan video promosi yang menarik. Kami akan mengedit video Anda dengan motion graphics dan efek yang keren.",
+              features: ["Durasi 15-60 detik", "Motion graphics", "Voice over option", "Background music", "Transisi keren", "Text overlay"],
+              benefits: ["Viral di sosial media", "Meningkatkan penjualan", "Profesional", "Cepat selesai"],
+              requirements: ["Footage video/gambar", "Script/naskah", "Logo brand", "Musik latar (opsional)"],
+              price: 500000, priceNote: "mulai dari", deliveryTime: "3-5 hari kerja", revision: "2x revisi",
+              faq: [{ q: "Saya perlu menyediakan apa?", a: "Footage video atau gambar produk, script/naskah (opsional)." }] },
+            { id: 8, name: "Konten TikTok & Reels", category: "video", categoryName: "Edit Video", icon: "fab fa-tiktok",
+              description: "Video pendek viral untuk TikTok, Instagram Reels, atau YouTube Shorts.",
+              longDescription: "Kuasai algoritma TikTok dan Reels dengan video pendek yang viral. Kami akan edit video Anda dengan efek trending dan caption menarik.",
+              features: ["Trending effect", "Caption menarik", "Green screen effect", "Fast editing", "Sound matching", "Hashtag research"],
+              benefits: ["Potensi viral", "Engagement tinggi", "Efek trending", "Cepat populer"],
+              requirements: ["Footage video", "Teks/naskah", "Tren yang diinginkan"],
+              price: 300000, priceNote: "per video", deliveryTime: "1-2 hari kerja", revision: "1x revisi",
+              faq: [{ q: "Bisa request efek tertentu?", a: "Bisa, sesuaikan dengan tren terkini." }] },
+            { id: 9, name: "Video Editing untuk YouTube", category: "video", categoryName: "Edit Video", icon: "fab fa-youtube",
+              description: "Edit video vlog, tutorial, atau konten YouTube panjang secara profesional.",
+              longDescription: "Tingkatkan kualitas konten YouTube Anda dengan editing video profesional. Dari color grading hingga subtitle, kami siap membantu.",
+              features: ["Transitions & effects", "Subtitles", "Thumbnail design", "Color grading", "Audio sync", "End screen"],
+              benefits: ["Konten berkualitas", "Retensi penonton tinggi", "Thumbnail menarik", "Subtitle akurat"],
+              requirements: ["Footage video", "Naskah", "Link referensi YouTube", "Musik latar"],
+              price: 750000, priceNote: "per 10 menit", deliveryTime: "3-7 hari kerja", revision: "2x revisi",
+              faq: [{ q: "Format video output?", a: "MP4 HD atau 4K sesuai kebutuhan." }] },
+            { id: 10, name: "Artikel Blog & SEO", category: "writer", categoryName: "Writer", icon: "fas fa-newspaper",
+              description: "Artikel berkualitas untuk blog yang SEO friendly dan menarik dibaca.",
+              longDescription: "Tingkatkan traffic website Anda dengan artikel blog berkualitas yang dioptimasi untuk SEO. Konten informatif dan engaging.",
+              features: ["Keyword research", "Meta description", "Internal linking", "Plagiarism free", "Readability optimized", "Featured image saran"],
+              benefits: ["Traffic naik", "SEO friendly", "100% original", "Engaging"],
+              requirements: ["Topik artikel", "Keyword target", "Target audience", "Panjang artikel"],
+              price: 75000, priceNote: "per 500 kata", deliveryTime: "1-2 hari kerja", revision: "1x revisi",
+              faq: [{ q: "Topik bisa request?", a: "Bisa, silakan berikan keyword atau topik." }] },
+            { id: 11, name: "Copywriting & Caption", category: "writer", categoryName: "Writer", icon: "fas fa-tag",
+              description: "Copywriting persuasif untuk landing page, iklan, dan caption media sosial.",
+              longDescription: "Tingkatkan konversi dengan copywriting yang persuasif. Kami akan menulis teks yang mampu menggerakkan audiens untuk bertindak.",
+              features: ["Persuasive tone", "CTA kuat", "Benefit focused", "Brand voice adjustment", "A/B testing ready", "Emotional trigger"],
+              benefits: ["Konversi tinggi", "CTA jelas", "Brand voice", "Emotional marketing"],
+              requirements: ["Produk/layanan", "Target audience", "Tujuan copy", "Platform penggunaan"],
+              price: 50000, priceNote: "per caption", deliveryTime: "1 hari kerja", revision: "1x revisi",
+              faq: [{ q: "Apakah bisa untuk iklan Facebook/Google?", a: "Ya, copywriting bisa dioptimasi untuk iklan." }] },
+            { id: 12, name: "Deskripsi Produk (E-commerce)", category: "writer", categoryName: "Writer", icon: "fas fa-box",
+              description: "Deskripsi produk yang informatif dan menggugah minat beli.",
+              longDescription: "Tingkatkan penjualan produk Anda dengan deskripsi yang informatif dan persuasif. Optimasi SEO untuk produk Anda.",
+              features: ["SEO keywords", "Benefit oriented", "Format rapi", "Bulk order ready", "Specification highlight", "Emotional benefit"],
+              benefits: ["Penjualan naik", "SEO produk", "Customer informed", "Bulk discount"],
+              requirements: ["Nama produk", "Spesifikasi", "Keunggulan produk", "Target market"],
+              price: 25000, priceNote: "per produk", deliveryTime: "1-2 hari kerja", revision: "1x revisi",
+              faq: [{ q: "Minimal order berapa?", a: "Minimal 5 produk." }] },
+            { id: 13, name: "E-book Panduan & Tutorial", category: "ebook", categoryName: "E-book", icon: "fas fa-graduation-cap",
+              description: "E-book panduan praktis untuk berbagai topik (bisnis, desain, marketing).",
+              longDescription: "Buat e-book panduan yang bermanfaat untuk audiens Anda. Kami akan menulis, mendesain, dan memformat e-book Anda.",
+              features: ["File PDF/EPUB", "Cover profesional", "Layout menarik", "Illustration included", "Table of contents", "Hyperlink active"],
+              benefits: ["Authority building", "Lead magnet", "Passive income", "Brand awareness"],
+              requirements: ["Topik e-book", "Outline/kerangka", "Target audience", "Panjang halaman"],
+              price: 99000, priceNote: "per e-book", deliveryTime: "5-7 hari kerja", revision: "2x revisi",
+              faq: [{ q: "Apakah bisa dipasarkan ulang?", a: "Lisensi untuk penggunaan pribadi. Resell perlu izin." }] },
+            { id: 14, name: "Template E-book Siap Pakai", category: "ebook", categoryName: "E-book", icon: "fas fa-file-alt",
+              description: "Template e-book dengan desain cantik yang bisa diedit sendiri.",
+              longDescription: "Template e-book profesional yang siap edit di Canva. Hemat waktu dengan template yang sudah jadi.",
+              features: ["Canva template", "Editable", "Commercial use", "Instant download", "20+ pages", "Font included"],
+              benefits: ["Instant download", "Mudah diedit", "Desain profesional", "Commercial use"],
+              requirements: ["Software Canva (gratis)", "Konten sendiri"],
+              price: 50000, priceNote: "per template", deliveryTime: "Instant (link download)", revision: "-",
+              faq: [{ q: "Software apa yang perlu?", a: "Cukup Canva (gratis)." }] },
+            { id: 15, name: "E-book Custom Writing", category: "ebook", categoryName: "E-book", icon: "fas fa-pen-fancy",
+              description: "Kami tuliskan e-book custom untuk Anda sesuai topik yang diinginkan.",
+              longDescription: "Butuh e-book original untuk bisnis Anda? Kami akan menulis e-book custom dari riset hingga final proofreading.",
+              features: ["Riset mendalam", "Struktur rapi", "Proofread included", "Unik & original", "Cover design", "Formatting"],
+              benefits: ["100% original", "Riset mendalam", "Proofread", "Cover profesional"],
+              requirements: ["Topik e-book", "Target pembaca", "Panjang halaman (min 30)", "Deadline"],
+              price: 500000, priceNote: "mulai dari", deliveryTime: "10-14 hari kerja", revision: "2x revisi",
+              faq: [{ q: "Berapa halaman minimal?", a: "Minimal 30 halaman." }] }
+        ];
+        
+        let currentService = null;
+        
+        function getServiceId() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return parseInt(urlParams.get('id'));
+        }
+        
+        function orderNow(service) {
+            let cart = JSON.parse(localStorage.getItem('regalstudio_cart') || '[]');
+            
+            const existingIndex = cart.findIndex(item => item.id === service.id && item.type === 'service');
+            
+            if (existingIndex !== -1) {
+                cart[existingIndex].quantity = (cart[existingIndex].quantity || 1) + 1;
+                showNotification(`"${service.name}" quantity ditambahkan`, 'success');
+            } else {
+                cart.push({
+                    id: service.id,
+                    name: service.name,
+                    type: 'service',
+                    price: service.price,
+                    quantity: 1,
+                    icon: service.icon
+                });
+                showNotification(`"${service.name}" ditambahkan ke keranjang`, 'success');
+            }
+            
+            localStorage.setItem('regalstudio_cart', JSON.stringify(cart));
+            
+            setTimeout(() => {
+                window.location.href = 'checkout.html';
+            }, 1000);
+        }
+        
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${message}`;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 2000);
+        }
+        
+        function renderServiceDetail() {
+            const serviceId = getServiceId();
+            const service = servicesData.find(s => s.id === serviceId);
+            currentService = service;
+            
+            if (!service) {
+                document.querySelector('.detail-hero h1').innerText = 'Layanan Tidak Ditemukan';
+                document.getElementById('serviceInfo').innerHTML = `<div class="info-box"><i class="fas fa-exclamation-triangle"></i> <p>Maaf, layanan dengan ID ${serviceId} tidak ditemukan.</p><a href="services.html" class="btn-primary" style="margin-top:1rem; display:inline-block;">Kembali ke Layanan</a></div>`;
+                document.getElementById('servicePrice').innerHTML = 'Rp 0';
+                return;
+            }
+            
+            // Update hero
+            document.getElementById('serviceTitle').innerText = service.name;
+            document.getElementById('serviceCategory').innerText = service.categoryName;
+            document.getElementById('serviceShortDesc').innerText = service.description;
+            document.getElementById('servicePrice').innerHTML = `Rp ${service.price.toLocaleString('id-ID')}`;
+            document.getElementById('servicePriceNote').innerText = service.priceNote;
+            
+            // Build benefits HTML
+            const benefitsHtml = service.benefits ? `
+                <div class="benefit-grid">
+                    ${service.benefits.map(b => `<div class="benefit-item"><i class="fas fa-star"></i><span>${b}</span></div>`).join('')}
+                </div>
+            ` : '';
+            
+            // Build requirements HTML
+            const requirementsHtml = service.requirements ? `
+                <ul class="requirement-list">
+                    ${service.requirements.map(r => `<li><i class="fas fa-check-circle"></i> ${r}</li>`).join('')}
+                </ul>
+            ` : '<p>Tidak ada persyaratan khusus. Konsultasikan kebutuhan Anda dengan kami.</p>';
+            
+            // Main content
+            document.getElementById('serviceInfo').innerHTML = `
+                <div class="service-icon-large" style="margin-bottom: 1rem;">
+                    <i class="${service.icon}" style="font-size: 3rem; color: var(--primary);"></i>
+                </div>
+                
+                <h2><i class="fas fa-info-circle"></i> Tentang Layanan Ini</h2>
+                <p>${service.longDescription || service.description}</p>
+                
+                <h2><i class="fas fa-gift"></i> Yang Anda Dapatkan</h2>
+                ${benefitsHtml}
+                
+                <h2><i class="fas fa-list-check"></i> Fitur Lengkap</h2>
+                <ul class="feature-list">
+                    ${service.features.map(f => `<li><i class="fas fa-check-circle"></i> ${f}</li>`).join('')}
+                </ul>
+                
+                <h2><i class="fas fa-clipboard-list"></i> Persyaratan & Kelengkapan</h2>
+                <div class="info-box">
+                    ${requirementsHtml}
+                </div>
+                
+                <h2><i class="fas fa-chart-line"></i> Proses Pengerjaan</h2>
+                <div class="process-steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <strong>Konsultasi</strong>
+                        <p>Diskusikan kebutuhan dan keinginan Anda</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <strong>Penawaran</strong>
+                        <p>Kami berikan harga dan timeline</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <strong>Pengerjaan</strong>
+                        <p>Tim kami mulai mengerjakan pesanan</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <strong>Revisi & Final</strong>
+                        <p>Revisi sesuai kebutuhan dan serah terima</p>
+                    </div>
+                </div>
+                
+                <h2><i class="fas fa-clock"></i> Estimasi & Revisi</h2>
+                <div class="price-box">
+                    <p><i class="fas fa-hourglass-half"></i> <strong>Estimasi pengerjaan:</strong> ${service.deliveryTime}</p>
+                    <p><i class="fas fa-sync-alt"></i> <strong>Revisi:</strong> ${service.revision}</p>
+                    <p><i class="fas fa-shield-alt"></i> <strong>Garansi:</strong> 30 hari setelah serah terima</p>
+                </div>
+                
+                <h2><i class="fas fa-question-circle"></i> Pertanyaan Umum (FAQ)</h2>
+                ${service.faq.map((item, idx) => `
+                    <div class="faq-item">
+                        <div class="faq-question" data-faq="${idx}">
+                            ${item.q} <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer" id="faqAnswer${idx}">
+                            ${item.a}
+                        </div>
+                    </div>
+                `).join('')}
+            `;
+            
+            // Setup FAQ toggle
+            document.querySelectorAll('.faq-question').forEach(question => {
+                question.addEventListener('click', function() {
+                    const answerId = this.getAttribute('data-faq');
+                    const answer = document.getElementById(`faqAnswer${answerId}`);
+                    answer.classList.toggle('show');
+                    this.classList.toggle('active');
+                });
+            });
+            
+            // Setup order button
+            const orderBtn = document.getElementById('orderNowBtn');
+            if (orderBtn) {
+                orderBtn.addEventListener('click', function() {
+                    orderNow(service);
+                });
+            }
+        }
+        
+        // Initialize
+        renderServiceDetail();
+    </script>
+</body>
+</html>

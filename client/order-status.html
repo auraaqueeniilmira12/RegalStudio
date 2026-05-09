@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Status Order - RegalStudio</title>
+    
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    
+    <style>
+        .status-hero {
+            padding: 120px 0 50px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+            text-align: center;
+        }
+        
+        .status-hero h1 {
+            color: var(--white);
+            margin-bottom: 0.5rem;
+        }
+        
+        .status-content {
+            padding: 60px 0;
+            min-height: 60vh;
+        }
+        
+        .status-tabs {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--bg-light);
+            padding-bottom: 1rem;
+        }
+        
+        .status-tab {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--gray);
+            transition: all var(--transition-fast);
+            border-radius: var(--radius-md);
+        }
+        
+        .status-tab:hover {
+            color: var(--primary);
+        }
+        
+        .status-tab.active {
+            background: var(--primary);
+            color: var(--white);
+        }
+        
+        .orders-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .order-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-normal);
+            border: 1px solid rgba(139, 92, 246, 0.1);
+        }
+        
+        .order-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--bg-light);
+        }
+        
+        .order-number {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--primary);
+        }
+        
+        .order-date {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+        
+        .order-service {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .order-service strong {
+            color: var(--dark);
+        }
+        
+        .order-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin: 1rem 0;
+        }
+        
+        .order-detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .order-detail-item i {
+            color: var(--primary);
+            width: 20px;
+        }
+        
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.35rem 1rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            background: #F59E0B;
+            color: white;
+        }
+        
+        .status-paid {
+            background: #3B82F6;
+            color: white;
+        }
+        
+        .status-process {
+            background: #8B5CF6;
+            color: white;
+        }
+        
+        .status-done {
+            background: #10B981;
+            color: white;
+        }
+        
+        .status-cancelled {
+            background: #EF4444;
+            color: white;
+        }
+        
+        .order-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+        }
+        
+        .btn-result {
+            background: #10B981;
+            color: white;
+        }
+        
+        .btn-result:hover {
+            background: #059669;
+        }
+        
+        .tracking-progress {
+            margin: 1rem 0;
+            background: var(--bg-light);
+            border-radius: var(--radius-lg);
+            padding: 1rem;
+        }
+        
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin: 1rem 0;
+        }
+        
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 10%;
+            right: 10%;
+            height: 3px;
+            background: var(--gray-light);
+            z-index: 0;
+        }
+        
+        .progress-step {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            flex: 1;
+        }
+        
+        .progress-step .step-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gray-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.5rem;
+            color: white;
+            font-size: 1rem;
+        }
+        
+        .progress-step.completed .step-icon {
+            background: var(--primary);
+        }
+        
+        .progress-step.active .step-icon {
+            background: var(--primary);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3);
+        }
+        
+        .progress-step .step-label {
+            font-size: 0.7rem;
+            color: var(--gray);
+        }
+        
+        .progress-step.completed .step-label,
+        .progress-step.active .step-label {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .empty-orders {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        
+        .empty-orders i {
+            font-size: 4rem;
+            color: var(--gray-light);
+            margin-bottom: 1rem;
+        }
+        
+        .empty-orders h3 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .btn-danger {
+            background: #EF4444;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #DC2626;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-header h3 {
+            margin-bottom: 0;
+        }
+        
+        .modal-close {
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+        
+        .result-image {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .progress-steps {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .progress-steps::before {
+                display: none;
+            }
+            
+            .progress-step {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                text-align: left;
+            }
+            
+            .progress-step .step-icon {
+                margin: 0;
+            }
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 12px 24px;
+            border-radius: 12px;
+            z-index: 10000;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== NAVBAR ==================== -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <h2>RegalStudio</h2>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html">Beranda</a></li>
+                <li><a href="services.html">Layanan</a></li>
+                <li><a href="portfolio.html">Portofolio</a></li>
+                <li><a href="ebook.html">E-book</a></li>
+                <li><a href="contact.html">Kontak</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="login.html" class="btn-login"><i class="fas fa-user"></i> Masuk</a>
+                <div class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ==================== HERO SECTION ==================== -->
+    <section class="status-hero">
+        <div class="container">
+            <h1>Status Pesanan</h1>
+            <p>Lihat dan pantau status pesanan Anda di sini</p>
+        </div>
+    </section>
+
+    <!-- ==================== STATUS CONTENT ==================== -->
+    <section class="status-content">
+        <div class="container">
+            <div class="status-tabs">
+                <button class="status-tab active" data-status="all">Semua</button>
+                <button class="status-tab" data-status="pending">Menunggu Bayar</button>
+                <button class="status-tab" data-status="paid">Verifikasi</button>
+                <button class="status-tab" data-status="process">Diproses</button>
+                <button class="status-tab" data-status="done">Selesai</button>
+                <button class="status-tab" data-status="cancelled">Dibatalkan</button>
+            </div>
+            
+            <div id="ordersList" class="orders-list"></div>
+        </div>
+    </section>
+
+    <!-- ==================== MODAL DETAIL ORDER ==================== -->
+    <div id="orderModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Detail Pesanan</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL LIHAT HASIL ==================== -->
+    <div id="resultModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-file-alt"></i> Hasil Pekerjaan</h3>
+                <button class="modal-close" onclick="closeResultModal()">&times;</button>
+            </div>
+            <div id="resultModalBody"></div>
+        </div>
+    </div>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-col">
+                <h3>RegalStudio</h3>
+                <p>Solusi digital profesional untuk website, desain, edit video, writer, dan e-book berkualitas.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Layanan</h4>
+                <ul>
+                    <li><a href="service-detail.html?id=1"><i class="fas fa-code"></i> Jasa Website</a></li>
+                    <li><a href="service-detail.html?id=4"><i class="fas fa-palette"></i> Jasa Desain</a></li>
+                    <li><a href="service-detail.html?id=7"><i class="fas fa-film"></i> Jasa Edit Video</a></li>
+                    <li><a href="service-detail.html?id=10"><i class="fas fa-feather-alt"></i> Jasa Writer</a></li>
+                    <li><a href="ebook.html"><i class="fas fa-book"></i> E-book</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Perusahaan</h4>
+                <ul>
+                    <li><a href="about.html"><i class="fas fa-info-circle"></i> Tentang Kami</a></li>
+                    <li><a href="portfolio.html"><i class="fas fa-folder-open"></i> Portofolio</a></li>
+                    <li><a href="contact.html"><i class="fas fa-envelope"></i> Kontak</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Kontak</h4>
+                <ul>
+                    <li><i class="fas fa-envelope"></i> hello@regalstudio.id</li>
+                    <li><i class="fas fa-phone"></i> +62 812 3456 7890</li>
+                    <li><i class="fas fa-clock"></i> Senin - Jumat: 09.00 - 17.00</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 RegalStudio. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    
+    <script>
+        let currentFilter = 'all';
+        
+        function getStatusBadge(status) {
+            const badges = {
+                'pending': '<span class="status-badge status-pending"><i class="fas fa-clock"></i> Menunggu Pembayaran</span>',
+                'paid': '<span class="status-badge status-paid"><i class="fas fa-check-circle"></i> Menunggu Verifikasi</span>',
+                'process': '<span class="status-badge status-process"><i class="fas fa-spinner fa-pulse"></i> Sedang Diproses</span>',
+                'done': '<span class="status-badge status-done"><i class="fas fa-trophy"></i> Selesai</span>',
+                'cancelled': '<span class="status-badge status-cancelled"><i class="fas fa-times-circle"></i> Dibatalkan</span>'
+            };
+            return badges[status] || badges['pending'];
+        }
+        
+        function getStatusText(status) {
+            const texts = {
+                'pending': 'Menunggu Pembayaran',
+                'paid': 'Menunggu Verifikasi',
+                'process': 'Sedang Diproses',
+                'done': 'Selesai',
+                'cancelled': 'Dibatalkan'
+            };
+            return texts[status] || status;
+        }
+        
+        function getProgressSteps(currentStatus) {
+            const allSteps = [
+                { key: 'pending', label: 'Order Dibuat', icon: 'fas fa-file-invoice' },
+                { key: 'paid', label: 'Menunggu Verifikasi', icon: 'fas fa-credit-card' },
+                { key: 'process', label: 'Sedang Dikerjakan', icon: 'fas fa-cogs' },
+                { key: 'done', label: 'Selesai', icon: 'fas fa-check-circle' }
+            ];
+            
+            const statusOrder = ['pending', 'paid', 'process', 'done'];
+            const currentIndex = statusOrder.indexOf(currentStatus);
+            
+            return allSteps.map((step, idx) => ({
+                ...step,
+                completed: idx <= currentIndex && currentStatus !== 'cancelled',
+                active: idx === currentIndex && currentStatus !== 'cancelled'
+            }));
+        }
+        
+        function formatPrice(price) {
+            return 'Rp ' + price.toLocaleString('id-ID');
+        }
+        
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification`;
+            notification.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#10B981' : type === 'error' ? '#EF4444' : '#3B82F6'};
+                color: white;
+                padding: 12px 24px;
+                border-radius: 12px;
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            `;
+            notification.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i> ${message}`;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+        
+        // Fungsi untuk melihat hasil pekerjaan
+        function viewResult(resultFile) {
+            if (!resultFile) {
+                showNotification('Belum ada hasil pekerjaan', 'error');
+                return;
+            }
+            
+            const modalBody = document.getElementById('resultModalBody');
+            
+            // Cek apakah hasil berupa link atau base64/gambar
+            if (resultFile.startsWith('http://') || resultFile.startsWith('https://')) {
+                // Link website
+                modalBody.innerHTML = `
+                    <p style="margin-bottom: 1rem;">Klik link di bawah untuk melihat hasil pekerjaan:</p>
+                    <a href="${resultFile}" target="_blank" class="btn-primary" style="display: block; text-align: center;">
+                        <i class="fas fa-external-link-alt"></i> Buka Link Hasil
+                    </a>
+                `;
+            } else if (resultFile.startsWith('data:')) {
+                // Base64 image atau file
+                if (resultFile.startsWith('data:image')) {
+                    modalBody.innerHTML = `
+                        <p>Berikut hasil pekerjaan Anda:</p>
+                        <img src="${resultFile}" class="result-image" alt="Hasil Pekerjaan">
+                        <a href="${resultFile}" download="hasil_pekerjaan.jpg" class="btn-primary" style="display: block; text-align: center; margin-top: 1rem;">
+                            <i class="fas fa-download"></i> Download File
+                        </a>
+                    `;
+                } else {
+                    modalBody.innerHTML = `
+                        <p>File hasil pekerjaan:</p>
+                        <a href="${resultFile}" download="hasil_pekerjaan" class="btn-primary" style="display: block; text-align: center;">
+                            <i class="fas fa-download"></i> Download File
+                        </a>
+                    `;
+                }
+            } else {
+                modalBody.innerHTML = `
+                    <p>File hasil pekerjaan:</p>
+                    <a href="${resultFile}" target="_blank" class="btn-primary" style="display: block; text-align: center;">
+                        <i class="fas fa-external-link-alt"></i> Lihat / Download
+                    </a>
+                `;
+            }
+            
+            document.getElementById('resultModal').classList.add('show');
+        }
+        
+        function closeResultModal() {
+            document.getElementById('resultModal').classList.remove('show');
+        }
+        
+        function deleteOrder(orderId) {
+            if (confirm('Apakah Anda yakin ingin menghapus pesanan ini? Tindakan ini tidak dapat dibatalkan.')) {
+                let orders = JSON.parse(localStorage.getItem('regalstudio_orders') || '[]');
+                orders = orders.filter(order => order.id !== orderId);
+                localStorage.setItem('regalstudio_orders', JSON.stringify(orders));
+                renderOrders();
+                showNotification('Pesanan berhasil dihapus', 'success');
+            }
+        }
+        
+        function reorder(order) {
+            let cart = JSON.parse(localStorage.getItem('regalstudio_cart') || '[]');
+            
+            if (order.items && order.items.length > 0) {
+                order.items.forEach(item => {
+                    const existingIndex = cart.findIndex(c => c.id === item.id && c.type === item.type);
+                    if (existingIndex !== -1) {
+                        cart[existingIndex].quantity = (cart[existingIndex].quantity || 1) + (item.quantity || 1);
+                    } else {
+                        cart.push({
+                            id: item.id,
+                            name: item.name,
+                            type: item.type,
+                            price: item.price,
+                            quantity: item.quantity || 1,
+                            icon: item.icon || (item.type === 'service' ? 'fas fa-code' : 'fas fa-book')
+                        });
+                    }
+                });
+            } else {
+                const existingIndex = cart.findIndex(c => c.id === order.serviceId && c.type === 'service');
+                if (existingIndex !== -1) {
+                    cart[existingIndex].quantity = (cart[existingIndex].quantity || 1) + 1;
+                } else {
+                    cart.push({
+                        id: order.serviceId,
+                        name: order.serviceName,
+                        type: 'service',
+                        price: order.totalPrice,
+                        quantity: 1,
+                        icon: 'fas fa-code'
+                    });
+                }
+            }
+            
+            localStorage.setItem('regalstudio_cart', JSON.stringify(cart));
+            showNotification('Item ditambahkan ke keranjang! Mengarahkan ke checkout...', 'success');
+            
+            setTimeout(() => {
+                window.location.href = 'checkout.html';
+            }, 1500);
+        }
+        
+        function cancelOrder(orderId) {
+            if (confirm('Apakah Anda yakin ingin membatalkan pesanan ini?')) {
+                const orders = JSON.parse(localStorage.getItem('regalstudio_orders') || '[]');
+                const updatedOrders = orders.map(order => {
+                    if (order.id === orderId && order.status === 'pending') {
+                        return { ...order, status: 'cancelled' };
+                    }
+                    return order;
+                });
+                localStorage.setItem('regalstudio_orders', JSON.stringify(updatedOrders));
+                renderOrders();
+                showNotification('Pesanan berhasil dibatalkan', 'success');
+            }
+        }
+        
+        function viewOrderDetail(orderId) {
+            const orders = JSON.parse(localStorage.getItem('regalstudio_orders') || '[]');
+            const order = orders.find(o => o.id === orderId);
+            
+            if (!order) return;
+            
+            let itemsHtml = '';
+            if (order.items && order.items.length > 0) {
+                itemsHtml = order.items.map(item => `
+                    <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--bg-light);">
+                        <span>${item.name} ${item.quantity > 1 ? `(x${item.quantity})` : ''}</span>
+                        <span>${formatPrice(item.price * (item.quantity || 1))}</span>
+                    </div>
+                `).join('');
+            } else {
+                itemsHtml = `
+                    <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--bg-light);">
+                        <span>${order.serviceName}</span>
+                        <span>${formatPrice(order.totalPrice || 0)}</span>
+                    </div>
+                `;
+            }
+            
+            const modalBody = document.getElementById('modalBody');
+            modalBody.innerHTML = `
+                <div style="padding: 0.5rem 0; border-bottom: 1px solid var(--bg-light); display: flex; justify-content: space-between;">
+                    <strong>Nomor Order</strong>
+                    <span>#REG-${order.id}</span>
+                </div>
+                ${itemsHtml}
+                <div style="padding: 0.5rem 0; border-bottom: 1px solid var(--bg-light); display: flex; justify-content: space-between;">
+                    <strong>Nama</strong>
+                    <span>${order.customerName}</span>
+                </div>
+                <div style="padding: 0.5rem 0; border-bottom: 1px solid var(--bg-light); display: flex; justify-content: space-between;">
+                    <strong>Email</strong>
+                    <span>${order.customerEmail}</span>
+                </div>
+                <div style="padding: 0.5rem 0; border-bottom: 1px solid var(--bg-light); display: flex; justify-content: space-between;">
+                    <strong>WhatsApp</strong>
+                    <span>${order.customerPhone}</span>
+                </div>
+                <div style="padding: 0.5rem 0; border-bottom: 1px solid var(--bg-light); display: flex; justify-content: space-between;">
+                    <strong>Total Harga</strong>
+                    <span style="color: var(--primary); font-weight: 700;">${formatPrice(order.totalPrice || 0)}</span>
+                </div>
+                <div style="padding: 0.5rem 0; border-bottom: 1px solid var(--bg-light); display: flex; justify-content: space-between;">
+                    <strong>Status</strong>
+                    <span>${getStatusText(order.status)}</span>
+                </div>
+                <div style="padding: 0.5rem 0; border-bottom: 1px solid var(--bg-light); display: flex; justify-content: space-between;">
+                    <strong>Tanggal Order</strong>
+                    <span>${new Date(order.date).toLocaleString('id-ID')}</span>
+                </div>
+                ${order.result_file ? `<div style="padding: 0.5rem 0; border-bottom: 1px solid var(--bg-light); display: flex; justify-content: space-between;">
+                    <strong>Hasil Pekerjaan</strong>
+                    <span><button class="btn-sm btn-result" onclick="closeModal(); viewResult('${order.result_file}')"><i class="fas fa-eye"></i> Lihat Hasil</button></span>
+                </div>` : ''}
+                ${order.notes ? `
+                <div style="padding: 0.5rem 0;">
+                    <strong>Catatan</strong>
+                    <div style="margin-top: 0.5rem; color: var(--gray);">${order.notes}</div>
+                </div>
+                ` : ''}
+            `;
+            document.getElementById('orderModal').classList.add('show');
+        }
+        
+        function closeModal() {
+            document.getElementById('orderModal').classList.remove('show');
+        }
+        
+        function renderOrders() {
+            const session = JSON.parse(localStorage.getItem('regalstudio_session') || sessionStorage.getItem('regalstudio_session') || '{}');
+            let orders = JSON.parse(localStorage.getItem('regalstudio_orders') || '[]');
+            
+            let userOrders = orders.filter(o => o.customerEmail === session.email);
+            
+            if (currentFilter !== 'all') {
+                userOrders = userOrders.filter(o => o.status === currentFilter);
+            }
+            
+            userOrders.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            const ordersList = document.getElementById('ordersList');
+            
+            if (userOrders.length === 0) {
+                ordersList.innerHTML = `
+                    <div class="empty-orders">
+                        <i class="fas fa-inbox"></i>
+                        <h3>Tidak ada pesanan</h3>
+                        <p>Belum ada pesanan dengan status ${currentFilter === 'all' ? 'apapun' : getStatusText(currentFilter)}</p>
+                        <a href="services.html" class="btn-primary" style="margin-top: 1rem; display: inline-block;">
+                            <i class="fas fa-shopping-bag"></i> Pesan Sekarang
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+            
+            ordersList.innerHTML = userOrders.map(order => {
+                const progressSteps = getProgressSteps(order.status);
+                const canCancel = order.status === 'pending';
+                const canDelete = order.status === 'cancelled' || order.status === 'done';
+                const canReorder = order.status === 'cancelled' || order.status === 'done';
+                const canPay = order.status === 'pending';
+                const hasResult = order.status === 'done' && order.result_file;
+                
+                let itemsPreview = '';
+                if (order.items && order.items.length > 0) {
+                    itemsPreview = order.items.map(item => item.name).join(', ');
+                    if (itemsPreview.length > 50) itemsPreview = itemsPreview.substring(0, 50) + '...';
+                } else {
+                    itemsPreview = order.serviceName;
+                }
+                
+                return `
+                    <div class="order-card">
+                        <div class="order-header">
+                            <div>
+                                <span class="order-number">#REG-${order.id}</span>
+                                <div class="order-date">${new Date(order.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
+                            </div>
+                            ${getStatusBadge(order.status)}
+                        </div>
+                        
+                        <div class="order-service">
+                            <strong>${itemsPreview}</strong>
+                        </div>
+                        
+                        <div class="order-details">
+                            <div class="order-detail-item">
+                                <i class="fas fa-user"></i>
+                                <span>${order.customerName}</span>
+                            </div>
+                            <div class="order-detail-item">
+                                <i class="fas fa-phone"></i>
+                                <span>${order.customerPhone}</span>
+                            </div>
+                            <div class="order-detail-item">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <span>${formatPrice(order.totalPrice || 0)}</span>
+                            </div>
+                        </div>
+                        
+                        ${order.status !== 'cancelled' && order.status !== 'done' ? `
+                            <div class="tracking-progress">
+                                <div class="progress-steps">
+                                    ${progressSteps.map(step => `
+                                        <div class="progress-step ${step.completed ? 'completed' : ''} ${step.active ? 'active' : ''}">
+                                            <div class="step-icon">
+                                                <i class="${step.icon}"></i>
+                                            </div>
+                                            <div class="step-label">${step.label}</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
+                        
+                        <div class="order-actions">
+                            <button class="btn-secondary btn-sm" onclick="viewOrderDetail(${order.id})">
+                                <i class="fas fa-eye"></i> Detail
+                            </button>
+                            
+                            ${hasResult ? `
+                                <button class="btn-result btn-sm" onclick="viewResult('${order.result_file}')">
+                                    <i class="fas fa-download"></i> Lihat Hasil
+                                </button>
+                            ` : ''}
+                            
+                            ${canPay ? `
+                                <a href="order-confirmation.html?orderId=${order.id}" class="btn-primary btn-sm">
+                                    <i class="fas fa-credit-card"></i> Bayar Sekarang
+                                </a>
+                                <button class="btn-secondary btn-sm" onclick="cancelOrder(${order.id})">
+                                    <i class="fas fa-times"></i> Batalkan
+                                </button>
+                            ` : ''}
+                            
+                            ${canReorder ? `
+                                <button class="btn-primary btn-sm" onclick="reorder(${JSON.stringify(order).replace(/"/g, '&quot;')})">
+                                    <i class="fas fa-redo"></i> Beli Kembali
+                                </button>
+                            ` : ''}
+                            
+                            ${canDelete ? `
+                                <button class="btn-danger btn-sm" onclick="deleteOrder(${order.id})">
+                                    <i class="fas fa-trash"></i> Hapus
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function setupTabs() {
+            const tabs = document.querySelectorAll('.status-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    currentFilter = tab.getAttribute('data-status');
+                    renderOrders();
+                });
+            });
+        }
+        
+        setupTabs();
+        renderOrders();
+        
+        window.viewOrderDetail = viewOrderDetail;
+        window.closeModal = closeModal;
+        window.cancelOrder = cancelOrder;
+        window.deleteOrder = deleteOrder;
+        window.reorder = reorder;
+        window.viewResult = viewResult;
+        window.closeResultModal = closeResultModal;
+        
+        document.getElementById('orderModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('orderModal')) {
+                closeModal();
+            }
+        });
+        
+        document.getElementById('resultModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('resultModal')) {
+                closeResultModal();
+            }
+        });
+    </script>
+</body>
+</html>

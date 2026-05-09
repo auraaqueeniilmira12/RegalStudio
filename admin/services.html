@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Layanan - Admin RegalStudio</title>
+    <link rel="stylesheet" href="../client/css/style.css">
+    <link rel="stylesheet" href="../client/css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .admin-container { display: flex; min-height: 100vh; padding-top: 80px; }
+        .sidebar { width: 280px; background: var(--bg-card); border-right: 1px solid var(--border-color); padding: 2rem 1.5rem; position: fixed; height: 100vh; overflow-y: auto; }
+        .sidebar-logo { font-size: 1.5rem; font-weight: 700; background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 2rem; }
+        .sidebar-menu { list-style: none; }
+        .sidebar-menu li { margin-bottom: 0.5rem; }
+        .sidebar-menu li a { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; border-radius: var(--radius-md); color: var(--text-primary); text-decoration: none; transition: all 0.3s; }
+        .sidebar-menu li a:hover, .sidebar-menu li a.active { background: var(--primary); color: white; }
+        .main-content { flex: 1; margin-left: 280px; padding: 2rem; }
+        .page-title { margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+        .btn-add { background: var(--primary); color: white; padding: 0.5rem 1rem; border-radius: var(--radius-md); text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; border: none; cursor: pointer; }
+        .services-table { width: 100%; border-collapse: collapse; overflow-x: auto; display: block; }
+        .services-table th, .services-table td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border-color); }
+        .service-category { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 50px; font-size: 0.7rem; font-weight: 600; }
+        .category-website { background: #8B5CF6; color: white; }
+        .category-design { background: #EC4899; color: white; }
+        .category-video { background: #EF4444; color: white; }
+        .category-writer { background: #F59E0B; color: white; }
+        .category-ebook { background: #10B981; color: white; }
+        .btn-action { padding: 0.25rem 0.5rem; border-radius: var(--radius-sm); cursor: pointer; font-size: 0.7rem; margin: 0.1rem; border: none; }
+        .btn-edit { background: #F59E0B; color: white; }
+        .btn-delete { background: #EF4444; color: white; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; }
+        .modal.show { display: flex; }
+        .modal-content { background: var(--bg-card); border-radius: var(--radius-xl); padding: 2rem; max-width: 600px; width: 90%; max-height: 85vh; overflow-y: auto; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--gray); }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.25rem; font-weight: 500; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); background: var(--bg-white); }
+        .form-group textarea { resize: vertical; min-height: 80px; }
+        .features-group { margin-bottom: 1rem; }
+        .feature-input { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
+        .feature-input input { flex: 1; }
+        .btn-add-feature { background: var(--primary-light); color: white; border: none; border-radius: var(--radius-sm); padding: 0.25rem 0.5rem; cursor: pointer; font-size: 0.7rem; }
+        .empty-state { text-align: center; padding: 3rem; }
+        @media (max-width: 768px) { .main-content { margin-left: 0; } .sidebar { transform: translateX(-100%); } }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo"><h2>RegalStudio</h2></div>
+            <ul class="nav-menu">
+                <li><a href="../client/index.html">Beranda</a></li>
+                <li><a href="../client/services.html">Layanan</a></li>
+                <li><a href="../client/portfolio.html">Portofolio</a></li>
+                <li><a href="../client/ebook.html">E-book</a></li>
+                <li><a href="../client/contact.html">Kontak</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="#" id="logoutAdminBtn" class="btn-primary" style="padding:0.5rem 1rem;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ADMIN PANEL -->
+    <div class="admin-container">
+        <aside class="sidebar">
+            <div class="sidebar-logo">Admin Panel</div>
+            <ul class="sidebar-menu">
+                <li><a href="index.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="profile.html" class="active"><i class="fas fa-user-circle"></i> Profil Admin</a></li>
+                <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Kelola Pesanan</a></li>
+                <li><a href="services.html" class="active"><i class="fas fa-cog"></i> Kelola Layanan</a></li>
+                <li><a href="manage-admins.html"><i class="fas fa-users-cog"></i> Kelola Admin</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <div class="page-title">
+                <h1><i class="fas fa-cog"></i> Kelola Layanan</h1>
+                <button class="btn-add" id="addServiceBtn"><i class="fas fa-plus"></i> Tambah Layanan</button>
+            </div>
+            <div id="servicesList"></div>
+        </main>
+    </div>
+
+    <!-- MODAL TAMBAH/EDIT LAYANAN -->
+    <div id="serviceModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Tambah Layanan</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        // ========== CEK LOGIN ADMIN ==========
+        const session = JSON.parse(localStorage.getItem('regalstudio_session') || sessionStorage.getItem('regalstudio_session') || 'null');
+        if (!session || session.role !== 'admin') {
+            window.location.href = '../client/login.html';
+        }
+
+        // Data layanan default
+        let servicesData = [
+            { id: 1, name: "Landing Page Company Profile", category: "website", icon: "fas fa-building", description: "Halaman profesional untuk memperkenalkan perusahaan, produk, atau layanan Anda.", features: ["Responsive design", "SEO friendly", "Fast loading", "Animasi menarik"], price: 500000, priceNote: "mulai dari" },
+            { id: 2, name: "Toko Online (E-commerce)", category: "website", icon: "fas fa-store", description: "Website toko online lengkap dengan manajemen produk, keranjang, dan pembayaran.", features: ["Manajemen produk", "Integrasi payment gateway", "Laporan penjualan", "Dashboard admin"], price: 1500000, priceNote: "mulai dari" },
+            { id: 3, name: "Custom Web Application", category: "website", icon: "fas fa-laptop-code", description: "Aplikasi web custom sesuai kebutuhan bisnis spesifik Anda.", features: ["Fitur sesuai kebutuhan", "Database terintegrasi", "Login multi user", "API ready"], price: 2500000, priceNote: "mulai dari" },
+            { id: 4, name: "Logo & Brand Identity", category: "design", icon: "fas fa-pen-nib", description: "Desain logo unik dan identitas brand yang mencerminkan nilai bisnis Anda.", features: ["Logo + varian", "Palet warna", "Mood board", "Font recommendation"], price: 350000, priceNote: "mulai dari" },
+            { id: 5, name: "Feed Instagram & Konten Social Media", category: "design", icon: "fas fa-instagram", description: "Desain feed Instagram aesthetic dan konten media sosial yang menarik.", features: ["Template feed", "Story design", "Highlight cover", "Carousel post"], price: 250000, priceNote: "per 10 post" },
+            { id: 6, name: "Poster, Banner & Packaging", category: "design", icon: "fas fa-paintbrush", description: "Desain poster, banner event, dan packaging produk yang eye-catching.", features: ["Print ready", "High resolution", "Multiple revision", "Source file included"], price: 200000, priceNote: "mulai dari" },
+            { id: 7, name: "Video Promosi & Iklan", category: "video", icon: "fas fa-play-circle", description: "Video promosi singkat untuk produk, brand, atau event Anda.", features: ["Durasi 15-60 detik", "Motion graphics", "Voice over option", "Background music"], price: 500000, priceNote: "mulai dari" },
+            { id: 8, name: "Konten TikTok & Reels", category: "video", icon: "fab fa-tiktok", description: "Video pendek viral untuk TikTok, Instagram Reels, atau YouTube Shorts.", features: ["Trending effect", "Caption menarik", "Green screen", "Fast editing"], price: 300000, priceNote: "per video" },
+            { id: 9, name: "Video Editing untuk YouTube", category: "video", icon: "fab fa-youtube", description: "Edit video vlog, tutorial, atau konten YouTube panjang secara profesional.", features: ["Transitions & effects", "Subtitles", "Thumbnail design", "Color grading"], price: 750000, priceNote: "per 10 menit" },
+            { id: 10, name: "Artikel Blog & SEO", category: "writer", icon: "fas fa-newspaper", description: "Artikel berkualitas untuk blog yang SEO friendly dan menarik dibaca.", features: ["Keyword research", "Meta description", "Internal linking", "Plagiarism free"], price: 75000, priceNote: "per 500 kata" },
+            { id: 11, name: "Copywriting & Caption", category: "writer", icon: "fas fa-tag", description: "Copywriting persuasif untuk landing page, iklan, dan caption media sosial.", features: ["Persuasive tone", "CTA kuat", "Benefit focused", "Brand voice"], price: 50000, priceNote: "per caption" },
+            { id: 12, name: "Deskripsi Produk (E-commerce)", category: "writer", icon: "fas fa-box", description: "Deskripsi produk yang informatif dan menggugah minat beli.", features: ["SEO keywords", "Benefit oriented", "Format rapi", "Bulk order ready"], price: 25000, priceNote: "per produk" },
+            { id: 13, name: "E-book Panduan & Tutorial", category: "ebook", icon: "fas fa-graduation-cap", description: "E-book panduan praktis untuk berbagai topik (bisnis, desain, marketing).", features: ["File PDF/EPUB", "Cover profesional", "Layout menarik", "Illustration included"], price: 99000, priceNote: "per e-book" },
+            { id: 14, name: "Template E-book Siap Pakai", category: "ebook", icon: "fas fa-file-alt", description: "Template e-book dengan desain cantik yang bisa diedit sendiri.", features: ["Canva template", "Editable", "Commercial use", "Instant download"], price: 50000, priceNote: "per template" },
+            { id: 15, name: "E-book Custom Writing", category: "ebook", icon: "fas fa-pen-fancy", description: "Kami tuliskan e-book custom untuk Anda sesuai topik yang diinginkan.", features: ["Riset mendalam", "Struktur rapi", "Proofread included", "Unik & original"], price: 500000, priceNote: "mulai dari" }
+        ];
+
+        function getCategoryClass(category) {
+            const classes = {
+                'website': 'category-website',
+                'design': 'category-design',
+                'video': 'category-video',
+                'writer': 'category-writer',
+                'ebook': 'category-ebook'
+            };
+            return classes[category] || 'category-website';
+        }
+
+        function getCategoryName(category) {
+            const names = {
+                'website': 'Website',
+                'design': 'Desain Grafis',
+                'video': 'Edit Video',
+                'writer': 'Writer',
+                'ebook': 'E-book'
+            };
+            return names[category] || category;
+        }
+
+        function formatPrice(price) {
+            return 'Rp ' + price.toLocaleString('id-ID');
+        }
+
+        function loadServices() {
+            const saved = localStorage.getItem('regalstudio_services');
+            if (saved) {
+                servicesData = JSON.parse(saved);
+            } else {
+                saveServices();
+            }
+            renderServices();
+        }
+
+        function saveServices() {
+            localStorage.setItem('regalstudio_services', JSON.stringify(servicesData));
+            // Update juga ke window agar services.html bisa akses
+            window.regalstudioServicesData = servicesData;
+        }
+
+        function renderServices() {
+            const container = document.getElementById('servicesList');
+            
+            if (servicesData.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-cog"></i><p>Belum ada layanan</p></div>';
+                return;
+            }
+
+            let html = `
+                <table class="services-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nama Layanan</th>
+                            <th>Kategori</th>
+                            <th>Harga</th>
+                            <th>Aksi</th>
+                        </thead>
+                    <tbody>
+            `;
+
+            servicesData.forEach(service => {
+                html += `
+                    <tr>
+                        <td>${service.id}</td>
+                        <td><strong>${escapeHtml(service.name)}</strong><br><small style="color:var(--gray);">${escapeHtml(service.description.substring(0, 50))}${service.description.length > 50 ? '...' : ''}</small></td>
+                        <td><span class="service-category ${getCategoryClass(service.category)}">${getCategoryName(service.category)}</span></td>
+                        <td>${formatPrice(service.price)}<br><small>${service.priceNote}</small></td>
+                        <td>
+                            <button class="btn-action btn-edit" onclick="editService(${service.id})"><i class="fas fa-edit"></i> Edit</button>
+                            <button class="btn-action btn-delete" onclick="deleteService(${service.id})"><i class="fas fa-trash"></i> Hapus</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += `</tbody></table>`;
+            container.innerHTML = html;
+        }
+
+        function openModal(isEdit = false, service = null) {
+            const modalTitle = document.getElementById('modalTitle');
+            modalTitle.innerText = isEdit ? 'Edit Layanan' : 'Tambah Layanan';
+            
+            let featuresHtml = '';
+            const features = service?.features || ['Fitur 1', 'Fitur 2', 'Fitur 3'];
+            features.forEach((feature, index) => {
+                featuresHtml += `
+                    <div class="feature-input">
+                        <input type="text" class="feature-value" value="${escapeHtml(feature)}" placeholder="Fitur ${index + 1}">
+                        <button type="button" class="btn-add-feature" onclick="removeFeature(this)"><i class="fas fa-times"></i></button>
+                    </div>
+                `;
+            });
+
+            document.getElementById('modalBody').innerHTML = `
+                <input type="hidden" id="serviceId" value="${service?.id || ''}">
+                <div class="form-group">
+                    <label>Nama Layanan</label>
+                    <input type="text" id="serviceName" value="${escapeHtml(service?.name || '')}" placeholder="Contoh: Landing Page Company Profile" required>
+                </div>
+                <div class="form-group">
+                    <label>Kategori</label>
+                    <select id="serviceCategory">
+                        <option value="website" ${service?.category === 'website' ? 'selected' : ''}>Website</option>
+                        <option value="design" ${service?.category === 'design' ? 'selected' : ''}>Desain Grafis</option>
+                        <option value="video" ${service?.category === 'video' ? 'selected' : ''}>Edit Video</option>
+                        <option value="writer" ${service?.category === 'writer' ? 'selected' : ''}>Writer</option>
+                        <option value="ebook" ${service?.category === 'ebook' ? 'selected' : ''}>E-book</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Icon (Font Awesome)</label>
+                    <input type="text" id="serviceIcon" value="${service?.icon || 'fas fa-box'}" placeholder="fas fa-box">
+                </div>
+                <div class="form-group">
+                    <label>Deskripsi</label>
+                    <textarea id="serviceDescription" placeholder="Deskripsi layanan..." required>${escapeHtml(service?.description || '')}</textarea>
+                </div>
+                <div class="features-group">
+                    <label>Fitur-fitur</label>
+                    <div id="featuresList">${featuresHtml}</div>
+                    <button type="button" class="btn-add-feature" onclick="addFeature()" style="margin-top: 0.5rem;"><i class="fas fa-plus"></i> Tambah Fitur</button>
+                </div>
+                <div class="form-group">
+                    <label>Harga</label>
+                    <input type="number" id="servicePrice" value="${service?.price || ''}" placeholder="500000" required>
+                </div>
+                <div class="form-group">
+                    <label>Catatan Harga</label>
+                    <input type="text" id="servicePriceNote" value="${service?.priceNote || 'mulai dari'}" placeholder="mulai dari / per 500 kata">
+                </div>
+                <button class="btn-primary" onclick="saveService()" style="width:100%; margin-top:1rem;">Simpan</button>
+            `;
+            
+            document.getElementById('serviceModal').classList.add('show');
+        }
+
+        function addFeature() {
+            const featuresList = document.getElementById('featuresList');
+            const newIndex = featuresList.children.length;
+            const newFeature = document.createElement('div');
+            newFeature.className = 'feature-input';
+            newFeature.innerHTML = `
+                <input type="text" class="feature-value" placeholder="Fitur ${newIndex + 1}">
+                <button type="button" class="btn-add-feature" onclick="removeFeature(this)"><i class="fas fa-times"></i></button>
+            `;
+            featuresList.appendChild(newFeature);
+        }
+
+        function removeFeature(btn) {
+            btn.closest('.feature-input').remove();
+        }
+
+        function getFeatures() {
+            const features = [];
+            document.querySelectorAll('.feature-value').forEach(input => {
+                if (input.value.trim()) {
+                    features.push(input.value.trim());
+                }
+            });
+            return features;
+        }
+
+        function saveService() {
+            const id = document.getElementById('serviceId').value;
+            const name = document.getElementById('serviceName').value.trim();
+            const category = document.getElementById('serviceCategory').value;
+            const icon = document.getElementById('serviceIcon').value.trim();
+            const description = document.getElementById('serviceDescription').value.trim();
+            const features = getFeatures();
+            const price = parseInt(document.getElementById('servicePrice').value);
+            const priceNote = document.getElementById('servicePriceNote').value.trim();
+
+            if (!name || !description || !price) {
+                alert('Harap isi semua field yang wajib!');
+                return;
+            }
+
+            if (id) {
+                // Edit existing
+                const index = servicesData.findIndex(s => s.id == id);
+                if (index !== -1) {
+                    servicesData[index] = {
+                        ...servicesData[index],
+                        name: name,
+                        category: category,
+                        icon: icon || 'fas fa-box',
+                        description: description,
+                        features: features,
+                        price: price,
+                        priceNote: priceNote
+                    };
+                }
+            } else {
+                // Add new
+                const newId = Math.max(...servicesData.map(s => s.id), 0) + 1;
+                servicesData.push({
+                    id: newId,
+                    name: name,
+                    category: category,
+                    icon: icon || 'fas fa-box',
+                    description: description,
+                    features: features,
+                    price: price,
+                    priceNote: priceNote
+                });
+            }
+
+            saveServices();
+            closeModal();
+            renderServices();
+            alert('Layanan berhasil disimpan!');
+        }
+
+        function editService(id) {
+            const service = servicesData.find(s => s.id === id);
+            if (service) {
+                openModal(true, service);
+            }
+        }
+
+        function deleteService(id) {
+            if (confirm('Yakin ingin menghapus layanan ini?')) {
+                servicesData = servicesData.filter(s => s.id !== id);
+                saveServices();
+                renderServices();
+                alert('Layanan berhasil dihapus!');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('serviceModal').classList.remove('show');
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            return String(text).replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+
+        // Logout
+        document.getElementById('logoutAdminBtn')?.addEventListener('click', () => {
+            localStorage.removeItem('regalstudio_session');
+            sessionStorage.removeItem('regalstudio_session');
+            window.location.href = '../client/login.html';
+        });
+
+        document.getElementById('addServiceBtn')?.addEventListener('click', () => openModal(false));
+
+        // Initialize
+        loadServices();
+
+        window.editService = editService;
+        window.deleteService = deleteService;
+        window.saveService = saveService;
+        window.closeModal = closeModal;
+        window.addFeature = addFeature;
+        window.removeFeature = removeFeature;
+    </script>
+</body>
+</html>

@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Daftar - RegalStudio</title>
+    
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    
+    <style>
+        .auth-hero {
+            padding: 100px 0 50px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+            text-align: center;
+        }
+        
+        .auth-hero h1 {
+            color: var(--white);
+            margin-bottom: 0.5rem;
+        }
+        
+        .auth-container {
+            padding: 60px 0 80px;
+            min-height: calc(100vh - 400px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .auth-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-2xl);
+            box-shadow: var(--shadow-xl);
+            padding: 2.5rem;
+            max-width: 500px;
+            width: 100%;
+            margin: 0 auto;
+            border: 1px solid rgba(139, 92, 246, 0.1);
+        }
+        
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .auth-header .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+        }
+        
+        .auth-header .logo-icon i {
+            font-size: 2rem;
+            color: white;
+        }
+        
+        .auth-header h2 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .auth-header p {
+            font-size: 0.875rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .form-group label .required {
+            color: #EF4444;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 1px solid var(--gray-light);
+            border-radius: var(--radius-md);
+            background: var(--bg-white);
+            color: var(--dark);
+            font-family: inherit;
+            transition: all var(--transition-fast);
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+        }
+        
+        .form-group .input-icon {
+            position: relative;
+        }
+        
+        .form-group .input-icon i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+        
+        .form-group .input-icon input {
+            padding-left: 2.5rem;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        
+        .password-strength {
+            margin-top: 0.5rem;
+            height: 4px;
+            background: var(--bg-light);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .password-strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s, background 0.3s;
+        }
+        
+        .password-strength-text {
+            font-size: 0.7rem;
+            margin-top: 0.25rem;
+            color: var(--gray);
+        }
+        
+        .terms {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin: 1.5rem 0;
+            font-size: 0.8rem;
+        }
+        
+        .terms input {
+            width: 18px;
+            height: 18px;
+            margin-top: 2px;
+        }
+        
+        .terms a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .terms a:hover {
+            text-decoration: underline;
+        }
+        
+        .btn-auth {
+            width: 100%;
+            justify-content: center;
+            padding: 0.875rem;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .auth-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--bg-light);
+            font-size: 0.875rem;
+        }
+        
+        .auth-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        .password-wrapper {
+            position: relative;
+        }
+        
+        .toggle-password {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--gray);
+            z-index: 2;
+        }
+        
+        .alert {
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
+        
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            color: #EF4444;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10B981;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+        
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: #F59E0B;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+        
+        @media (max-width: 576px) {
+            .auth-card {
+                padding: 1.5rem;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== NAVBAR ==================== -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <h2>RegalStudio</h2>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html">Beranda</a></li>
+                <li><a href="services.html">Layanan</a></li>
+                <li><a href="portfolio.html">Portofolio</a></li>
+                <li><a href="ebook.html">E-book</a></li>
+                <li><a href="contact.html">Kontak</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="login.html" class="btn-login"><i class="fas fa-user"></i> Masuk</a>
+                <div class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ==================== HERO SECTION ==================== -->
+    <section class="auth-hero">
+        <div class="container">
+            <h1>Daftar Akun Baru</h1>
+            <p>Bergabunglah dengan RegalStudio untuk kemudahan bertransaksi</p>
+        </div>
+    </section>
+
+    <!-- ==================== REGISTER FORM ==================== -->
+    <section class="auth-container">
+        <div class="container">
+            <div class="auth-card">
+                <div class="auth-header">
+                    <div class="logo-icon">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <h2>Buat Akun Baru</h2>
+                    <p>Isi data diri Anda dengan benar</p>
+                </div>
+                
+                <div id="alertMessage"></div>
+                
+                <form id="registerForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fullname">Nama Lengkap <span class="required">*</span></label>
+                            <div class="input-icon">
+                                <i class="fas fa-user"></i>
+                                <input type="text" id="fullname" name="fullname" placeholder="John Doe" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="phone">Nomor WhatsApp <span class="required">*</span></label>
+                            <div class="input-icon">
+                                <i class="fab fa-whatsapp"></i>
+                                <input type="tel" id="phone" name="phone" placeholder="081234567890" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Alamat Email <span class="required">*</span></label>
+                        <div class="input-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="email" name="email" placeholder="contoh@email.com" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password <span class="required">*</span></label>
+                        <div class="password-wrapper">
+                            <div class="input-icon">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" id="password" name="password" placeholder="Minimal 6 karakter" required>
+                            </div>
+                            <span class="toggle-password" onclick="togglePassword('password')">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                        </div>
+                        <div class="password-strength">
+                            <div class="password-strength-bar" id="passwordStrengthBar"></div>
+                        </div>
+                        <div class="password-strength-text" id="passwordStrengthText"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirmPassword">Konfirmasi Password <span class="required">*</span></label>
+                        <div class="password-wrapper">
+                            <div class="input-icon">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Ulangi password" required>
+                            </div>
+                            <span class="toggle-password" onclick="togglePassword('confirmPassword')">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="terms">
+                        <input type="checkbox" id="termsCheckbox" required>
+                        <label for="termsCheckbox">
+                            Saya menyetujui <a href="#">Syarat & Ketentuan</a> dan <a href="#">Kebijakan Privasi</a> RegalStudio
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary btn-auth">
+                        <i class="fas fa-user-plus"></i> Daftar Sekarang
+                    </button>
+                </form>
+                
+                <div class="auth-footer">
+                    <p>Sudah punya akun? <a href="login.html">Masuk Sekarang</a></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-col">
+                <h3>RegalStudio</h3>
+                <p>Solusi digital profesional untuk website, desain, edit video, writer, dan e-book berkualitas.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Layanan</h4>
+                <ul>
+                    <li><a href="service-webdev.html">Jasa Website</a></li>
+                    <li><a href="service-design.html">Jasa Desain</a></li>
+                    <li><a href="service-video.html">Jasa Edit Video</a></li>
+                    <li><a href="service-writer.html">Jasa Writer</a></li>
+                    <li><a href="ebook.html">E-book</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Perusahaan</h4>
+                <ul>
+                    <li><a href="about.html">Tentang Kami</a></li>
+                    <li><a href="portfolio.html">Portofolio</a></li>
+                    <li><a href="contact.html">Kontak</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Kontak</h4>
+                <ul>
+                    <li><i class="fas fa-envelope"></i> hello@regalstudio.id</li>
+                    <li><i class="fas fa-phone"></i> +62 812 3456 7890</li>
+                    <li><i class="fas fa-clock"></i> Senin - Jumat: 09.00 - 17.00</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 RegalStudio. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    
+    <script>
+        // Toggle password visibility
+        function togglePassword(fieldId) {
+            const passwordInput = document.getElementById(fieldId);
+            const toggleIcon = document.querySelector(`#${fieldId} + .toggle-password i`);
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                if (toggleIcon) {
+                    toggleIcon.classList.remove('fa-eye');
+                    toggleIcon.classList.add('fa-eye-slash');
+                }
+            } else {
+                passwordInput.type = 'password';
+                if (toggleIcon) {
+                    toggleIcon.classList.remove('fa-eye-slash');
+                    toggleIcon.classList.add('fa-eye');
+                }
+            }
+        }
+        
+        // Password strength checker
+        function checkPasswordStrength(password) {
+            let strength = 0;
+            let message = '';
+            
+            if (password.length >= 6) strength++;
+            if (password.length >= 10) strength++;
+            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^a-zA-Z0-9]/.test(password)) strength++;
+            
+            switch(strength) {
+                case 0:
+                case 1:
+                    message = 'Password terlalu lemah';
+                    strength = 20;
+                    break;
+                case 2:
+                    message = 'Password lemah';
+                    strength = 40;
+                    break;
+                case 3:
+                    message = 'Password sedang';
+                    strength = 60;
+                    break;
+                case 4:
+                    message = 'Password kuat';
+                    strength = 80;
+                    break;
+                case 5:
+                    message = 'Password sangat kuat';
+                    strength = 100;
+                    break;
+            }
+            
+            return { strength, message };
+        }
+        
+        // Show alert message
+        function showAlert(message, type) {
+            const alertDiv = document.getElementById('alertMessage');
+            alertDiv.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            setTimeout(() => {
+                alertDiv.innerHTML = '';
+            }, 4000);
+        }
+        
+        // Hash password (sama dengan di login.html)
+        function hashPassword(password) {
+            let hash = 0;
+            for (let i = 0; i < password.length; i++) {
+                const char = password.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return hash.toString();
+        }
+        
+        // Validate phone number
+        function validatePhone(phone) {
+            const phoneRegex = /^[0-9]{10,13}$/;
+            return phoneRegex.test(phone);
+        }
+        
+        // Validate email
+        function validateEmail(email) {
+            const emailRegex = /^[^\s@]+@([^\s@]+\.)+[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+        
+        // Register user
+        function registerUser(email, password, name, phone) {
+            const users = JSON.parse(localStorage.getItem('regalstudio_users') || '[]');
+            
+            // Check if email already exists
+            if (users.find(u => u.email === email)) {
+                return { success: false, message: 'Email sudah terdaftar! Silakan gunakan email lain atau login.' };
+            }
+            
+            const newUser = {
+                id: Date.now(),
+                email: email,
+                password: hashPassword(password),
+                name: name,
+                phone: phone,
+                role: 'user',
+                createdAt: new Date().toISOString()
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('regalstudio_users', JSON.stringify(users));
+            
+            return { success: true, message: 'Registrasi berhasil! Silakan login.' };
+        }
+        
+        // Password strength listener
+        document.getElementById('password').addEventListener('input', function() {
+            const password = this.value;
+            const result = checkPasswordStrength(password);
+            
+            const strengthBar = document.getElementById('passwordStrengthBar');
+            const strengthText = document.getElementById('passwordStrengthText');
+            
+            strengthBar.style.width = result.strength + '%';
+            
+            if (result.strength <= 40) {
+                strengthBar.style.backgroundColor = '#EF4444';
+                strengthText.style.color = '#EF4444';
+            } else if (result.strength <= 60) {
+                strengthBar.style.backgroundColor = '#F59E0B';
+                strengthText.style.color = '#F59E0B';
+            } else {
+                strengthBar.style.backgroundColor = '#10B981';
+                strengthText.style.color = '#10B981';
+            }
+            
+            strengthText.textContent = result.message;
+        });
+        
+        // Handle register form submission
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const fullname = document.getElementById('fullname').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const termsChecked = document.getElementById('termsCheckbox').checked;
+            
+            // Validations
+            if (!fullname) {
+                showAlert('Harap isi nama lengkap!', 'error');
+                return;
+            }
+            
+            if (!phone) {
+                showAlert('Harap isi nomor WhatsApp!', 'error');
+                return;
+            }
+            
+            if (!validatePhone(phone)) {
+                showAlert('Nomor WhatsApp tidak valid! Gunakan 10-13 digit angka.', 'error');
+                return;
+            }
+            
+            if (!email) {
+                showAlert('Harap isi alamat email!', 'error');
+                return;
+            }
+            
+            if (!validateEmail(email)) {
+                showAlert('Format email tidak valid! Contoh: nama@domain.com', 'error');
+                return;
+            }
+            
+            if (!password) {
+                showAlert('Harap isi password!', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showAlert('Password minimal 6 karakter!', 'error');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showAlert('Password dan konfirmasi password tidak cocok!', 'error');
+                return;
+            }
+            
+            if (!termsChecked) {
+                showAlert('Harap centang Syarat & Ketentuan terlebih dahulu!', 'warning');
+                return;
+            }
+            
+            // Register user
+            const result = registerUser(email, password, fullname, phone);
+            
+            if (result.success) {
+                showAlert(result.message, 'success');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+            } else {
+                showAlert(result.message, 'error');
+            }
+        });
+        
+        // Check if already logged in
+        function checkAuth() {
+            const session = localStorage.getItem('regalstudio_session') || sessionStorage.getItem('regalstudio_session');
+            if (session) {
+                // Redirect to dashboard if already logged in
+                window.location.href = 'dashboard.html';
+            }
+        }
+        
+        checkAuth();
+        
+        // Make functions global
+        window.togglePassword = togglePassword;
+    </script>
+</body>
+</html>

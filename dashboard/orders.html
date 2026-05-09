@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesanan Saya - RegalStudio</title>
+    <link rel="stylesheet" href="../client/css/style.css">
+    <link rel="stylesheet" href="../client/css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+        .sidebar {
+            width: 280px;
+            background: var(--bg-card);
+            border-right: 1px solid var(--border-color);
+            padding: 2rem 1.5rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        .sidebar-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+        }
+        .sidebar-menu {
+            list-style: none;
+        }
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+        }
+        .sidebar-menu li a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .sidebar-menu li a:hover,
+        .sidebar-menu li a.active {
+            background: var(--primary);
+            color: white;
+        }
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+        }
+        .page-title {
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .btn-back {
+            background: transparent;
+            border: 1px solid var(--gray-light);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: var(--dark);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-back:hover {
+            background: var(--bg-light);
+        }
+        .filter-tabs {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .filter-btn {
+            padding: 0.5rem 1.25rem;
+            background: var(--bg-light);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* Card Style Orders */
+        .orders-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+        .order-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+            padding: 1.25rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(139, 92, 246, 0.1);
+            transition: all 0.3s;
+        }
+        .order-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            margin-bottom: 0.75rem;
+        }
+        .order-number {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--primary);
+            background: rgba(139, 92, 246, 0.1);
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            display: inline-block;
+        }
+        .order-date {
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+        .order-service {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+        .order-service small {
+            font-size: 0.7rem;
+            font-weight: normal;
+            color: var(--gray);
+        }
+        .order-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 0.75rem 0;
+            padding: 0.75rem 0;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .order-detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--dark);
+        }
+        .order-detail-item i {
+            color: var(--primary);
+            width: 18px;
+            font-size: 0.8rem;
+        }
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .status-pending { background: #F59E0B; color: white; }
+        .status-paid { background: #3B82F6; color: white; }
+        .status-process { background: #8B5CF6; color: white; }
+        .status-done { background: #10B981; color: white; }
+        .status-cancelled { background: #EF4444; color: white; }
+        
+        .order-footer {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .btn-action {
+            padding: 0.4rem 1rem;
+            border-radius: var(--radius-md);
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.3s;
+            border: none;
+        }
+        .btn-detail {
+            background: var(--primary);
+            color: white;
+        }
+        .btn-detail:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+        .btn-result {
+            background: #10B981;
+            color: white;
+        }
+        .btn-result:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+        .btn-result i, .btn-detail i {
+            font-size: 0.7rem;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 4rem;
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+        }
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--gray-light);
+            margin-bottom: 1rem;
+        }
+        .hasil-tag {
+            font-size: 0.65rem;
+            color: #10B981;
+            margin-left: 0.5rem;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.show {
+            display: flex;
+        }
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .modal-header h3 {
+            margin-bottom: 0;
+            font-size: 1.2rem;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.3rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+        .result-image {
+            max-width: 100%;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        .btn-download {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: #10B981;
+            color: white;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            text-align: center;
+            width: 100%;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+            }
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                z-index: 1000;
+            }
+            .order-header {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .order-details {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== NAVBAR ==================== -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <h2>RegalStudio</h2>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="../client/index.html">Beranda</a></li>
+                <li><a href="../client/services.html">Layanan</a></li>
+                <li><a href="../client/portfolio.html">Portofolio</a></li>
+                <li><a href="../client/ebook.html">E-book</a></li>
+                <li><a href="../client/contact.html">Kontak</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="../client/login.html" class="btn-login"><i class="fas fa-user"></i> Masuk</a>
+                <div class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ==================== DASHBOARD CONTENT ==================== -->
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-logo">RegalStudio</div>
+            <ul class="sidebar-menu">
+                <li><a href="index.html"><i class="fas fa-tachometer-alt"></i> Overview</a></li>
+                <li><a href="orders.html" class="active"><i class="fas fa-shopping-bag"></i> Pesanan Saya</a></li>
+                <li><a href="profile.html"><i class="fas fa-user"></i> Profil Saya</a></li>
+                <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-title">
+                <h1><i class="fas fa-shopping-bag"></i> Pesanan Saya</h1>
+                <a href="../client/index.html" class="btn-back">
+                    <i class="fas fa-arrow-left"></i> Kembali ke Beranda
+                </a>
+            </div>
+
+            <div class="filter-tabs">
+                <button class="filter-btn active" data-status="all">Semua</button>
+                <button class="filter-btn" data-status="pending">Menunggu Bayar</button>
+                <button class="filter-btn" data-status="paid">Verifikasi</button>
+                <button class="filter-btn" data-status="process">Diproses</button>
+                <button class="filter-btn" data-status="done">Selesai</button>
+                <button class="filter-btn" data-status="cancelled">Dibatalkan</button>
+            </div>
+
+            <div id="ordersList"></div>
+        </main>
+    </div>
+
+    <!-- Modal Lihat Hasil -->
+    <div id="resultModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-file-alt"></i> Hasil Pekerjaan</h3>
+                <button class="modal-close" onclick="closeResultModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="resultModalBody"></div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-col">
+                <h3>RegalStudio</h3>
+                <p>Solusi digital profesional untuk website, desain, edit video, writer, dan e-book berkualitas.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Layanan</h4>
+                <ul>
+                    <li><a href="../client/service-detail.html?id=1"><i class="fas fa-code"></i> Jasa Website</a></li>
+                    <li><a href="../client/service-detail.html?id=4"><i class="fas fa-palette"></i> Jasa Desain</a></li>
+                    <li><a href="../client/service-detail.html?id=7"><i class="fas fa-film"></i> Jasa Edit Video</a></li>
+                    <li><a href="../client/service-detail.html?id=10"><i class="fas fa-feather-alt"></i> Jasa Writer</a></li>
+                    <li><a href="../client/ebook.html"><i class="fas fa-book"></i> E-book</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Perusahaan</h4>
+                <ul>
+                    <li><a href="../client/about.html"><i class="fas fa-info-circle"></i> Tentang Kami</a></li>
+                    <li><a href="../client/portfolio.html"><i class="fas fa-folder-open"></i> Portofolio</a></li>
+                    <li><a href="../client/contact.html"><i class="fas fa-envelope"></i> Kontak</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Kontak</h4>
+                <ul>
+                    <li><i class="fas fa-envelope"></i> hello@regalstudio.id</li>
+                    <li><i class="fas fa-phone"></i> +62 812 3456 7890</li>
+                    <li><i class="fas fa-clock"></i> Senin - Jumat: 09.00 - 17.00</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 RegalStudio. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="../client/js/main.js"></script>
+    
+    <script>
+        // ========== CEK LOGIN ==========
+        const session = JSON.parse(localStorage.getItem('regalstudio_session') || sessionStorage.getItem('regalstudio_session') || 'null');
+        
+        if (!session || !session.email) {
+            localStorage.setItem('redirect_after_login', window.location.href);
+            window.location.href = '../client/login.html';
+        }
+        
+        function formatPrice(price) {
+            return 'Rp ' + price.toLocaleString('id-ID');
+        }
+
+        function getStatusBadge(status) {
+            const badges = {
+                'pending': '<span class="status-badge status-pending"><i class="fas fa-clock"></i> Menunggu Bayar</span>',
+                'paid': '<span class="status-badge status-paid"><i class="fas fa-check-circle"></i> Verifikasi</span>',
+                'process': '<span class="status-badge status-process"><i class="fas fa-spinner"></i> Diproses</span>',
+                'done': '<span class="status-badge status-done"><i class="fas fa-trophy"></i> Selesai</span>',
+                'cancelled': '<span class="status-badge status-cancelled"><i class="fas fa-times"></i> Dibatalkan</span>'
+            };
+            return badges[status] || badges['pending'];
+        }
+
+        // Fungsi untuk melihat hasil pekerjaan
+        function viewResult(resultFile) {
+            if (!resultFile) {
+                alert('Belum ada hasil pekerjaan.');
+                return;
+            }
+            
+            const modalBody = document.getElementById('resultModalBody');
+            
+            if (resultFile.startsWith('http://') || resultFile.startsWith('https://')) {
+                modalBody.innerHTML = `
+                    <p style="margin-bottom: 1rem;">Klik link di bawah untuk melihat hasil pekerjaan:</p>
+                    <a href="${resultFile}" target="_blank" class="btn-primary" style="display: block; text-align: center;">
+                        <i class="fas fa-external-link-alt"></i> Buka Link Hasil
+                    </a>
+                `;
+            } else if (resultFile.startsWith('data:')) {
+                if (resultFile.startsWith('data:image')) {
+                    modalBody.innerHTML = `
+                        <p>Berikut hasil pekerjaan Anda:</p>
+                        <img src="${resultFile}" class="result-image" alt="Hasil Pekerjaan">
+                        <a href="${resultFile}" download="hasil_pekerjaan.jpg" class="btn-download">
+                            <i class="fas fa-download"></i> Download File
+                        </a>
+                    `;
+                } else {
+                    modalBody.innerHTML = `
+                        <p>File hasil pekerjaan:</p>
+                        <a href="${resultFile}" download="hasil_pekerjaan" class="btn-download">
+                            <i class="fas fa-download"></i> Download File
+                        </a>
+                    `;
+                }
+            } else {
+                modalBody.innerHTML = `
+                    <p>File hasil pekerjaan:</p>
+                    <a href="${resultFile}" target="_blank" class="btn-primary" style="display: block; text-align: center;">
+                        <i class="fas fa-external-link-alt"></i> Lihat / Download
+                    </a>
+                `;
+            }
+            
+            document.getElementById('resultModal').classList.add('show');
+        }
+        
+        function closeResultModal() {
+            document.getElementById('resultModal').classList.remove('show');
+        }
+
+        function loadOrders(status = 'all') {
+            const orders = JSON.parse(localStorage.getItem('regalstudio_orders') || '[]');
+            const userEmail = session.email;
+
+            let userOrders = orders.filter(o => o.customerEmail === userEmail);
+            if (status !== 'all') {
+                userOrders = userOrders.filter(o => o.status === status);
+            }
+            userOrders.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            const container = document.getElementById('ordersList');
+
+            if (userOrders.length === 0) {
+                container.innerHTML = `<div class="empty-state"><i class="fas fa-inbox"></i><p>Belum ada pesanan</p><a href="../client/services.html" class="btn-primary" style="margin-top:1rem;display:inline-block;"><i class="fas fa-shopping-bag"></i> Mulai Belanja</a></div>`;
+                return;
+            }
+
+            let html = '<div class="orders-grid">';
+            userOrders.forEach(order => {
+                let itemName = '';
+                if (order.items && order.items.length > 0) {
+                    itemName = order.items.map(i => i.name).join(', ');
+                    if (itemName.length > 50) itemName = itemName.substring(0, 50) + '...';
+                } else {
+                    itemName = order.serviceName;
+                }
+                
+                let hasResult = order.status === 'done' && order.result_file;
+                let statusClass = '';
+                switch(order.status) {
+                    case 'pending': statusClass = 'status-pending'; break;
+                    case 'paid': statusClass = 'status-paid'; break;
+                    case 'process': statusClass = 'status-process'; break;
+                    case 'done': statusClass = 'status-done'; break;
+                    case 'cancelled': statusClass = 'status-cancelled'; break;
+                }
+                
+                html += `
+                    <div class="order-card">
+                        <div class="order-header">
+                            <span class="order-number"><i class="fas fa-receipt"></i> #REG-${order.id}</span>
+                            <span class="order-date"><i class="fas fa-calendar-alt"></i> ${new Date(order.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                        </div>
+                        <div class="order-service">
+                            ${escapeHtml(itemName)}
+                            ${hasResult ? '<span class="hasil-tag"><i class="fas fa-check-circle"></i> Hasil tersedia</span>' : ''}
+                        </div>
+                        <div class="order-details">
+                            <div class="order-detail-item">
+                                <i class="fas fa-user"></i>
+                                <span>${escapeHtml(order.customerName)}</span>
+                            </div>
+                            <div class="order-detail-item">
+                                <i class="fab fa-whatsapp"></i>
+                                <span>${escapeHtml(order.customerPhone)}</span>
+                            </div>
+                            <div class="order-detail-item">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <span>${formatPrice(order.totalPrice || 0)}</span>
+                            </div>
+                            <div class="order-detail-item">
+                                <span class="status-badge ${statusClass}">${getStatusBadge(order.status)}</span>
+                            </div>
+                        </div>
+                        <div class="order-footer">
+                            <a href="../client/order-status.html?orderId=${order.id}" class="btn-action btn-detail">
+                                <i class="fas fa-eye"></i> Detail Pesanan
+                            </a>
+                            ${hasResult ? `<button class="btn-action btn-result" onclick="viewResult('${order.result_file}')"><i class="fas fa-download"></i> Lihat Hasil</button>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            return String(text).replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                loadOrders(btn.dataset.status);
+            });
+        });
+
+        document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('regalstudio_session');
+            sessionStorage.removeItem('regalstudio_session');
+            window.location.href = '../client/login.html';
+        });
+
+        // Load navbar user
+        if (typeof loadUserNavbar === 'function') {
+            loadUserNavbar();
+        }
+        loadOrders();
+        
+        window.viewResult = viewResult;
+        window.closeResultModal = closeResultModal;
+        
+        document.getElementById('resultModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('resultModal')) {
+                closeResultModal();
+            }
+        });
+    </script>
+</body>
+</html>

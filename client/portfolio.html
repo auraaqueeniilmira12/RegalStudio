@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Portofolio - RegalStudio</title>
+    
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    
+    <style>
+        .portfolio-hero {
+            padding: 120px 0 50px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: var(--white);
+            text-align: center;
+        }
+        
+        .portfolio-hero h1 {
+            color: var(--white);
+            margin-bottom: 0.5rem;
+        }
+        
+        .portfolio-hero p {
+            color: rgba(255,255,255,0.9);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .portfolio-filter {
+            padding: 40px 0 20px;
+            background: var(--bg-light);
+        }
+        
+        .filter-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+        
+        .filter-btn {
+            padding: 0.5rem 1.5rem;
+            border: none;
+            background: var(--bg-white);
+            color: var(--dark);
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all var(--transition-fast);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .filter-btn i {
+            margin-right: 0.5rem;
+        }
+        
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--primary);
+            color: var(--white);
+        }
+        
+        .portfolio-grid {
+            padding: 60px 0 80px;
+        }
+        
+        .portfolio-grid .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        
+        .portfolio-item {
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: all var(--transition-normal);
+            cursor: pointer;
+        }
+        
+        .portfolio-item:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+        }
+        
+        .portfolio-image {
+            height: 250px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .portfolio-image i {
+            font-size: 4rem;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .portfolio-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(139, 92, 246, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .portfolio-item:hover .portfolio-overlay {
+            opacity: 1;
+        }
+        
+        .portfolio-overlay i {
+            font-size: 3rem;
+            color: white;
+        }
+        
+        .portfolio-content {
+            padding: 1.5rem;
+        }
+        
+        .portfolio-category {
+            display: inline-block;
+            font-size: 0.7rem;
+            padding: 0.25rem 0.75rem;
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--primary);
+            border-radius: 50px;
+            margin-bottom: 0.75rem;
+        }
+        
+        .portfolio-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .portfolio-desc {
+            font-size: 0.875rem;
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+        
+        .portfolio-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .portfolio-link i {
+            transition: transform 0.3s;
+        }
+        
+        .portfolio-link:hover i {
+            transform: translateX(5px);
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+            max-width: 800px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0,0,0,0.5);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-close:hover {
+            background: var(--primary);
+        }
+        
+        .modal-image {
+            width: 100%;
+            height: 300px;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-image i {
+            font-size: 5rem;
+            color: white;
+        }
+        
+        .modal-body {
+            padding: 2rem;
+        }
+        
+        .modal-category {
+            display: inline-block;
+            font-size: 0.8rem;
+            padding: 0.25rem 1rem;
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--primary);
+            border-radius: 50px;
+            margin-bottom: 1rem;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .modal-desc {
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .modal-features {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-features li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .modal-features li i {
+            color: var(--primary);
+        }
+        
+        .btn-modal {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .portfolio-grid .container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== NAVBAR ==================== -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <h2>RegalStudio</h2>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html">Beranda</a></li>
+                <li><a href="services.html">Layanan</a></li>
+                <li><a href="portfolio.html" class="active">Portofolio</a></li>
+                <li><a href="ebook.html">E-book</a></li>
+                <li><a href="contact.html">Kontak</a></li>
+            </ul>
+            <div class="nav-actions">
+                <!-- Akan diisi oleh JavaScript (loadUserNavbar) -->
+                <a href="login.html" class="btn-login"><i class="fas fa-user"></i> Masuk</a>
+                <div class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ==================== HERO SECTION ==================== -->
+    <section class="portfolio-hero">
+        <div class="container">
+            <h1><i class="fas fa-folder-open"></i> Portofolio Kami</h1>
+            <p>Beberapa karya terbaik dari tim RegalStudio yang telah kami selesaikan untuk klien</p>
+        </div>
+    </section>
+
+    <!-- ==================== FILTER SECTION ==================== -->
+    <section class="portfolio-filter">
+        <div class="container filter-container">
+            <button class="filter-btn active" data-category="all"><i class="fas fa-th-large"></i> Semua</button>
+            <button class="filter-btn" data-category="website"><i class="fas fa-code"></i> Website</button>
+            <button class="filter-btn" data-category="design"><i class="fas fa-palette"></i> Desain</button>
+            <button class="filter-btn" data-category="video"><i class="fas fa-film"></i> Video</button>
+            <button class="filter-btn" data-category="writer"><i class="fas fa-feather-alt"></i> Writer</button>
+            <button class="filter-btn" data-category="ebook"><i class="fas fa-book"></i> E-book</button>
+        </div>
+    </section>
+
+    <!-- ==================== PORTFOLIO GRID ==================== -->
+    <section class="portfolio-grid">
+        <div class="container" id="portfolioGrid">
+            <!-- Portfolio items will be populated by JavaScript -->
+        </div>
+    </section>
+
+    <!-- ==================== CTA SECTION ==================== -->
+    <section class="cta-section">
+        <div class="container cta-container">
+            <h2>Ingin Portofolio Seperti Ini?</h2>
+            <p>Hubungi kami dan wujudkan proyek impian Anda bersama RegalStudio</p>
+            <a href="contact.html" class="btn-primary btn-large"><i class="fas fa-paper-plane"></i> Konsultasi Sekarang</a>
+        </div>
+    </section>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-col">
+                <h3>RegalStudio</h3>
+                <p>Solusi digital profesional untuk website, desain, edit video, writer, dan e-book berkualitas.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Layanan</h4>
+                <ul>
+                    <li><a href="service-detail.html?id=1"><i class="fas fa-code"></i> Jasa Website</a></li>
+                    <li><a href="service-detail.html?id=4"><i class="fas fa-palette"></i> Jasa Desain</a></li>
+                    <li><a href="service-detail.html?id=7"><i class="fas fa-film"></i> Jasa Edit Video</a></li>
+                    <li><a href="service-detail.html?id=10"><i class="fas fa-feather-alt"></i> Jasa Writer</a></li>
+                    <li><a href="ebook.html"><i class="fas fa-book"></i> E-book</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Perusahaan</h4>
+                <ul>
+                    <li><a href="about.html"><i class="fas fa-info-circle"></i> Tentang Kami</a></li>
+                    <li><a href="portfolio.html"><i class="fas fa-folder-open"></i> Portofolio</a></li>
+                    <li><a href="contact.html"><i class="fas fa-envelope"></i> Kontak</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Kontak</h4>
+                <ul>
+                    <li><i class="fas fa-envelope"></i> hello@regalstudio.id</li>
+                    <li><i class="fas fa-phone"></i> +62 812 3456 7890</li>
+                    <li><i class="fas fa-clock"></i> Senin - Jumat: 09.00 - 17.00</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 RegalStudio. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Modal -->
+    <div id="portfolioModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+            <div id="modalBody">
+                <!-- Dynamic content -->
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    
+    <script>
+        // Portfolio Data
+        const portfolioData = [
+            // Website
+            {
+                id: 1,
+                title: "E-commerce Fashion Store",
+                category: "website",
+                icon: "fas fa-store",
+                thumbnail: "ecommerce",
+                description: "Platform e-commerce lengkap untuk brand fashion lokal. Dilengkapi dengan manajemen produk, keranjang belanja, dan integrasi payment gateway.",
+                client: "Fashionista ID",
+                year: "2025",
+                features: [
+                    "Manajemen produk unlimited",
+                    "Sistem keranjang belanja",
+                    "Integrasi Midtrans payment",
+                    "Dashboard admin",
+                    "Laporan penjualan real-time"
+                ]
+            },
+            {
+                id: 2,
+                title: "Company Profile - PT Maju Jaya",
+                category: "website",
+                icon: "fas fa-building",
+                thumbnail: "company",
+                description: "Website company profile modern untuk perusahaan konstruksi. Dilengkapi dengan portofolio proyek dan form kontak.",
+                client: "PT Maju Jaya",
+                year: "2025",
+                features: [
+                    "Desain modern & responsif",
+                    "Portofolio proyek gallery",
+                    "Form kontak terintegrasi",
+                    "SEO friendly",
+                    "Loading cepat"
+                ]
+            },
+            {
+                id: 3,
+                title: "Landing Page Promo Produk",
+                category: "website",
+                icon: "fas fa-rocket",
+                thumbnail: "landing",
+                description: "Landing page high-converting untuk campaign produk skincare. Konversi meningkat 45% setelah menggunakan landing page ini.",
+                client: "Glow Beauty",
+                year: "2025",
+                features: [
+                    "Copywriting persuasive",
+                    "Countdown timer",
+                    "Form registrasi",
+                    "WhatsApp integration",
+                    "Analytics tracking"
+                ]
+            },
+            
+            // Design
+            {
+                id: 4,
+                title: "Logo & Brand Identity - Kopi Nusantara",
+                category: "design",
+                icon: "fas fa-mug-hot",
+                thumbnail: "logo",
+                description: "Desain logo dan identitas brand untuk coffee shop lokal yang mengangkat budaya nusantara dengan sentuhan modern.",
+                client: "Kopi Nusantara",
+                year: "2025",
+                features: [
+                    "Logo utama + varian",
+                    "Palet warna brand",
+                    "Packaging design",
+                    "Merchandise template",
+                    "Brand guidelines"
+                ]
+            },
+            {
+                id: 5,
+                title: "Feed Instagram - Cafe Kekinian",
+                category: "design",
+                icon: "fab fa-instagram",
+                thumbnail: "instagram",
+                description: "Feed Instagram aesthetic dengan konsep modern minimalis untuk cafe di Jakarta Selatan.",
+                client: "The Morning Brew",
+                year: "2025",
+                features: [
+                    "30+ konten feed",
+                    "Story highlight covers",
+                    "Template Instagram story",
+                    "Color palette brand",
+                    "Caption copywriting"
+                ]
+            },
+            {
+                id: 6,
+                title: "Poster Event Musik",
+                category: "design",
+                icon: "fas fa-music",
+                thumbnail: "poster",
+                description: "Poster event musik festival dengan desain edgy dan eye-catching yang berhasil menjual ribuan tiket.",
+                client: "Jakarta Music Fest",
+                year: "2024",
+                features: [
+                    "Poster utama event",
+                    "Flyer dan banner",
+                    "Digital ads asset",
+                    "Social media kit",
+                    "Print ready files"
+                ]
+            },
+            
+            // Video
+            {
+                id: 7,
+                title: "Video Brand Profile - Startup Tech",
+                category: "video",
+                icon: "fas fa-play-circle",
+                thumbnail: "brandvideo",
+                description: "Video brand profile berdurasi 60 detik yang menceritakan perjalanan startup teknologi lokal.",
+                client: "TechInno ID",
+                year: "2025",
+                features: [
+                    "Motion graphics",
+                    "Voice over profesional",
+                    "Background music custom",
+                    "Subtitles",
+                    "Versi landscape & portrait"
+                ]
+            },
+            {
+                id: 8,
+                title: "TikTok Content - Skincare Brand",
+                category: "video",
+                icon: "fab fa-tiktok",
+                thumbnail: "tiktok",
+                description: "10 video pendek viral untuk brand skincare yang berhasil mendapatkan 2M+ views di TikTok.",
+                client: "GlowLab",
+                year: "2025",
+                features: [
+                    "Trending effects",
+                    "Green screen edits",
+                    "Sound design",
+                    "Caption engaging",
+                    "Hashtag research"
+                ]
+            },
+            {
+                id: 9,
+                title: "YouTube Vlog Editing",
+                category: "video",
+                icon: "fab fa-youtube",
+                thumbnail: "youtube",
+                description: "Editing video vlog perjalanan untuk YouTuber travel dengan 100k+ subscribers.",
+                client: "Jelajah Rasa",
+                year: "2024",
+                features: [
+                    "Transitions kreatif",
+                    "Color grading",
+                    "Subtitles & captions",
+                    "BGM & SFX",
+                    "Thumbnail design"
+                ]
+            },
+            
+            // Writer
+            {
+                id: 10,
+                title: "SEO Article - Travel Blog",
+                category: "writer",
+                icon: "fas fa-newspaper",
+                thumbnail: "article",
+                description: "20 artikel blog SEO yang berhasil menaikkan traffic website hingga 300% dalam 3 bulan.",
+                client: "Traveloka Insider",
+                year: "2025",
+                features: [
+                    "Keyword research",
+                    "SEO optimization",
+                    "Internal linking",
+                    "Meta description",
+                    "Featured image suggestion"
+                ]
+            },
+            {
+                id: 11,
+                title: "Copywriting Landing Page + Email",
+                category: "writer",
+                icon: "fas fa-envelope-open-text",
+                thumbnail: "copywriting",
+                description: "Copywriting untuk landing page dan email marketing series untuk produk digital course.",
+                client: "SkillUp Academy",
+                year: "2025",
+                features: [
+                    "Headline & subheadline",
+                    "CTA yang kuat",
+                    "Email sequence (5 emails)",
+                    "A/B testing copy",
+                    "Benefit-driven content"
+                ]
+            },
+            
+            // E-book
+            {
+                id: 12,
+                title: "E-book 'Social Media Marketing'",
+                category: "ebook",
+                icon: "fas fa-book",
+                thumbnail: "ebook",
+                description: "E-book panduan lengkap tentang strategi social media marketing untuk UMKM. Terjual 500+ copies dalam 1 bulan.",
+                client: "Digital Marketer Pro",
+                year: "2025",
+                features: [
+                    "Cover desain profesional",
+                    "Layout menarik",
+                    "Ilustrasi pendukung",
+                    "Case study nyata",
+                    "Template checklist"
+                ]
+            },
+            {
+                id: 13,
+                title: "Template E-book Canva - 20 Pages",
+                category: "ebook",
+                icon: "fas fa-file-alt",
+                thumbnail: "template",
+                description: "Template e-book editable di Canva dengan desain premium untuk pebisnis dan kreator.",
+                client: "Creative Template Store",
+                year: "2025",
+                features: [
+                    "File Canva link",
+                    "20 halaman desain",
+                    "Font included",
+                    "Commercial license",
+                    "Instant download"
+                ]
+            }
+        ];
+        
+        // Get color for thumbnail (simulasi)
+        const thumbnailColors = [
+            "linear-gradient(135deg, #8B5CF6, #FF6B6B)",
+            "linear-gradient(135deg, #0EA5E9, #10B981)",
+            "linear-gradient(135deg, #F59E0B, #EF4444)",
+            "linear-gradient(135deg, #EC4899, #8B5CF6)",
+            "linear-gradient(135deg, #06B6D4, #3B82F6)",
+            "linear-gradient(135deg, #84CC16, #10B981)"
+        ];
+        
+        function getRandomColor() {
+            return thumbnailColors[Math.floor(Math.random() * thumbnailColors.length)];
+        }
+        
+        function getCategoryName(category) {
+            const names = {
+                'website': 'Website',
+                'design': 'Desain Grafis',
+                'video': 'Edit Video',
+                'writer': 'Writer',
+                'ebook': 'E-book'
+            };
+            return names[category] || category;
+        }
+        
+        function renderPortfolio(category = 'all') {
+            const container = document.getElementById('portfolioGrid');
+            
+            const filtered = category === 'all' 
+                ? portfolioData 
+                : portfolioData.filter(item => item.category === category);
+            
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; grid-column: 1/-1; padding: 60px;">
+                        <i class="fas fa-folder-open" style="font-size: 3rem; color: var(--gray); margin-bottom: 1rem;"></i>
+                        <h3>Tidak ada portofolio ditemukan</h3>
+                        <p>Coba pilih kategori lain</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = filtered.map(item => `
+                <div class="portfolio-item" onclick="openModal(${item.id})">
+                    <div class="portfolio-image" style="background: ${getRandomColor()};">
+                        <i class="${item.icon}"></i>
+                        <div class="portfolio-overlay">
+                            <i class="fas fa-search-plus"></i>
+                        </div>
+                    </div>
+                    <div class="portfolio-content">
+                        <span class="portfolio-category">${getCategoryName(item.category)}</span>
+                        <h3 class="portfolio-title">${item.title}</h3>
+                        <p class="portfolio-desc">${item.description.substring(0, 100)}${item.description.length > 100 ? '...' : ''}</p>
+                        <a href="#" class="portfolio-link" onclick="event.stopPropagation(); openModal(${item.id})">Lihat Detail <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        function openModal(id) {
+            const item = portfolioData.find(p => p.id === id);
+            if (!item) return;
+            
+            const modalBody = document.getElementById('modalBody');
+            
+            modalBody.innerHTML = `
+                <div class="modal-image" style="background: ${getRandomColor()};">
+                    <i class="${item.icon}"></i>
+                </div>
+                <div class="modal-body">
+                    <span class="modal-category">${getCategoryName(item.category)}</span>
+                    <h2 class="modal-title">${item.title}</h2>
+                    <p class="modal-desc">${item.description}</p>
+                    
+                    ${item.client ? `<p><i class="fas fa-user"></i> <strong>Klien:</strong> ${item.client}</p>` : ''}
+                    ${item.year ? `<p><i class="fas fa-calendar"></i> <strong>Tahun:</strong> ${item.year}</p>` : ''}
+                    
+                    <h4 style="margin: 1rem 0 0.5rem;"><i class="fas fa-list-check"></i> Fitur / Detail Pengerjaan:</h4>
+                    <ul class="modal-features">
+                        ${item.features.map(f => `<li><i class="fas fa-check-circle"></i> ${f}</li>`).join('')}
+                    </ul>
+                    
+                    <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                        <a href="contact.html" class="btn-primary btn-modal">
+                            <i class="fas fa-paper-plane"></i> Pesan Jasa Serupa
+                        </a>
+                        <a href="services.html" class="btn-secondary btn-modal">
+                            <i class="fas fa-eye"></i> Lihat Layanan
+                        </a>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('portfolioModal').classList.add('show');
+        }
+        
+        function closeModal() {
+            document.getElementById('portfolioModal').classList.remove('show');
+        }
+        
+        // Setup filter
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const category = btn.getAttribute('data-category');
+                renderPortfolio(category);
+            });
+        });
+        
+        // Search params
+        const urlParams = new URLSearchParams(window.location.search);
+        const categoryParam = urlParams.get('category');
+        if (categoryParam && ['website', 'design', 'video', 'writer', 'ebook'].includes(categoryParam)) {
+            const targetBtn = document.querySelector(`.filter-btn[data-category="${categoryParam}"]`);
+            if (targetBtn) targetBtn.click();
+        } else {
+            renderPortfolio('all');
+        }
+        
+        // Close modal on outside click
+        document.getElementById('portfolioModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('portfolioModal')) {
+                closeModal();
+            }
+        });
+        
+        // Make functions global
+        window.openModal = openModal;
+        window.closeModal = closeModal;
+    </script>
+</body>
+</html>

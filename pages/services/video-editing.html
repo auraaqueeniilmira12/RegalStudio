@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jasa Edit Video - RegalStudio</title>
+    <link rel="stylesheet" href="../../client/css/style.css">
+    <link rel="stylesheet" href="../../css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        .service-hero { padding: 120px 0 50px; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: var(--white); text-align: center; }
+        .service-hero h1 { color: var(--white); margin-bottom: 0.5rem; }
+        .service-content { padding: 60px 0; }
+        .service-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
+        .service-list li { padding: 0.75rem 0; display: flex; align-items: center; gap: 0.75rem; border-bottom: 1px solid var(--bg-light); }
+        .service-list li i { color: var(--primary); }
+        .price-card { background: var(--bg-card); border-radius: var(--radius-xl); padding: 2rem; box-shadow: var(--shadow-md); text-align: center; position: sticky; top: 100px; }
+        .price-card .price { font-size: 2.5rem; font-weight: 800; color: var(--primary); }
+        .btn-block { width: 100%; justify-content: center; margin-top: 1rem; }
+        @media (max-width: 768px) { .service-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo"><h2>RegalStudio</h2></div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="../../client/index.html">Beranda</a></li>
+                <li><a href="../../services.html">Layanan</a></li>
+                <li><a href="../../portfolio.html">Portofolio</a></li>
+                <li><a href="../../ebook.html">E-book</a></li>
+                <li><a href="../../contact.html">Kontak</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="../../login.html" class="btn-login"><i class="fas fa-user"></i> Masuk</a>
+                <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="service-hero">
+        <div class="container">
+            <h1><i class="fas fa-film"></i> Jasa Edit Video</h1>
+            <p>Video berkualitas tinggi untuk konten Anda</p>
+        </div>
+    </section>
+
+    <section class="service-content">
+        <div class="container">
+            <div class="service-grid">
+                <div>
+                    <h2>Layanan Editing Video Profesional</h2>
+                    <p>Tim editor video berpengalaman siap membantu membuat konten video yang menarik dan profesional.</p>
+                    <ul class="service-list">
+                        <li><i class="fas fa-check-circle"></i> Video Promosi & Iklan</li>
+                        <li><i class="fas fa-check-circle"></i> Konten TikTok & Instagram Reels</li>
+                        <li><i class="fas fa-check-circle"></i> Video YouTube (Vlog, Tutorial, Review)</li>
+                        <li><i class="fas fa-check-circle"></i> Motion Graphics & Animasi</li>
+                        <li><i class="fas fa-check-circle"></i> Green Screen & Visual Effects</li>
+                        <li><i class="fas fa-check-circle"></i> Color Grading & Audio Mastering</li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="price-card">
+                        <i class="fas fa-film" style="font-size: 3rem; color: var(--primary);"></i>
+                        <h3>Harga Mulai Dari</h3>
+                        <div class="price">Rp 300.000</div>
+                        <p><small>Per video (durasi 15-60 detik)</small></p>
+                        <a href="../../client/service-detail.html?id=8" class="btn-primary btn-block"><i class="fas fa-shopping-cart"></i> Pesan Sekarang</a>
+                        <a href="../../client/contact.html" class="btn-secondary btn-block" style="margin-top: 0.5rem;"><i class="fas fa-comment"></i> Konsultasi Gratis</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-col"><h3>RegalStudio</h3><p>Solusi digital profesional untuk website, desain, edit video, writer, dan e-book berkualitas.</p></div>
+            <div class="footer-col"><h4>Layanan</h4><ul><li><a href="web-dev.html">Jasa Website</a></li><li><a href="graphic-design.html">Jasa Desain</a></li><li><a href="video-editing.html">Jasa Edit Video</a></li><li><a href="writer.html">Jasa Writer</a></li></ul></div>
+            <div class="footer-col"><h4>Perusahaan</h4><ul><li><a href="../../about.html">Tentang Kami</a></li><li><a href="../../portfolio.html">Portofolio</a></li><li><a href="../../contact.html">Kontak</a></li></ul></div>
+            <div class="footer-col"><h4>Kontak</h4><ul><li><i class="fas fa-envelope"></i> hello@regalstudio.id</li><li><i class="fas fa-phone"></i> +62 812 3456 7890</li></ul></div>
+        </div>
+        <div class="footer-bottom"><p>&copy; 2026 RegalStudio. All rights reserved.</p></div>
+    </footer>
+
+    <script src="../../js/main.js"></script>
+</body>
+</html>

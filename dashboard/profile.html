@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Saya - RegalStudio</title>
+    <link rel="stylesheet" href="../client/css/style.css">
+    <link rel="stylesheet" href="../client/css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+        .sidebar {
+            width: 280px;
+            background: var(--bg-card);
+            border-right: 1px solid var(--border-color);
+            padding: 2rem 1.5rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        .sidebar-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+        }
+        .sidebar-menu {
+            list-style: none;
+        }
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+        }
+        .sidebar-menu li a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .sidebar-menu li a:hover,
+        .sidebar-menu li a.active {
+            background: var(--primary);
+            color: white;
+        }
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+        }
+        .page-title {
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .btn-back {
+            background: transparent;
+            border: 1px solid var(--gray-light);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: var(--dark);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-back:hover {
+            background: var(--bg-light);
+        }
+        .profile-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            max-width: 650px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(139, 92, 246, 0.1);
+        }
+        .avatar-section {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .avatar-wrapper {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+        .avatar {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.3s;
+        }
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .avatar i {
+            font-size: 3.5rem;
+            color: white;
+        }
+        .avatar-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+            color: white;
+            font-size: 1.5rem;
+        }
+        .avatar-wrapper:hover .avatar-overlay {
+            opacity: 1;
+        }
+        .avatar-actions {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .btn-avatar {
+            background: var(--bg-light);
+            border: 1px solid var(--border-color);
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            transition: all 0.3s;
+        }
+        .btn-avatar:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        .btn-danger-avatar {
+            background: rgba(239,68,68,0.1);
+            border-color: #EF4444;
+            color: #EF4444;
+        }
+        .btn-danger-avatar:hover {
+            background: #EF4444;
+            color: white;
+        }
+        .avatar-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 0.75rem;
+        }
+        .avatar-email {
+            font-size: 0.875rem;
+            color: var(--gray);
+        }
+        .avatar-hint {
+            font-size: 0.7rem;
+            color: var(--gray);
+            margin-top: 0.5rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        .form-group label .required {
+            color: #EF4444;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            background: var(--bg-primary);
+            color: var(--dark);
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+        }
+        .form-group input:disabled {
+            background: var(--bg-light);
+            cursor: not-allowed;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        .btn-save {
+            padding: 0.875rem 1.5rem;
+            font-size: 1rem;
+            width: 100%;
+            justify-content: center;
+        }
+        .alert {
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+        }
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10B981;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            color: #EF4444;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        .password-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+        .password-section h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+        #avatarInput {
+            display: none;
+        }
+        
+        /* Modal Avatar */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.show {
+            display: flex;
+        }
+        .modal-content {
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        .avatar-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .avatar-option {
+            background: var(--bg-light);
+            border-radius: var(--radius-lg);
+            padding: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            border: 2px solid transparent;
+        }
+        .avatar-option:hover {
+            transform: scale(1.05);
+            border-color: var(--primary);
+        }
+        .avatar-option .avatar-icon {
+            font-size: 2.5rem;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+        .avatar-option .avatar-name {
+            font-size: 0.65rem;
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                z-index: 1000;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+            .avatar-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== NAVBAR ==================== -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <h2>RegalStudio</h2>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="../client/index.html">Beranda</a></li>
+                <li><a href="../client/services.html">Layanan</a></li>
+                <li><a href="../client/portfolio.html">Portofolio</a></li>
+                <li><a href="../client/ebook.html">E-book</a></li>
+                <li><a href="../client/contact.html">Kontak</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="../client/login.html" class="btn-login"><i class="fas fa-user"></i> Masuk</a>
+                <div class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ==================== DASHBOARD CONTENT ==================== -->
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">RegalStudio</div>
+            <ul class="sidebar-menu">
+                <li><a href="index.html"><i class="fas fa-tachometer-alt"></i> Overview</a></li>
+                <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Pesanan Saya</a></li>
+                <li><a href="profile.html" class="active"><i class="fas fa-user"></i> Profil Saya</a></li>
+                <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-title">
+                <h1><i class="fas fa-user-circle"></i> Profil Saya</h1>
+                <a href="../client/index.html" class="btn-back">
+                    <i class="fas fa-arrow-left"></i> Kembali ke Beranda
+                </a>
+            </div>
+
+            <div class="profile-card">
+                <div class="avatar-section">
+                    <div class="avatar-wrapper" id="avatarWrapper">
+                        <div class="avatar" id="avatarPreview">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="avatar-overlay">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                    </div>
+                    <input type="file" id="avatarInput" accept="image/jpeg,image/png,image/jpg">
+                    <div class="avatar-actions">
+                        <button class="btn-avatar" id="selectAvatarBtn"><i class="fas fa-images"></i> Pilih Avatar</button>
+                        <button class="btn-avatar btn-danger-avatar" id="deleteAvatarBtn"><i class="fas fa-trash"></i> Hapus Foto</button>
+                    </div>
+                    <div class="avatar-name" id="displayName">Loading...</div>
+                    <div class="avatar-email" id="displayEmail">loading@email.com</div>
+                    <div class="avatar-hint">
+                        <i class="fas fa-info-circle"></i> Klik foto untuk upload gambar sendiri
+                    </div>
+                </div>
+
+                <div id="alertMessage"></div>
+
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label for="fullname">Nama Lengkap <span class="required">*</span></label>
+                        <input type="text" id="fullname" name="fullname" placeholder="Masukkan nama lengkap" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Alamat Email</label>
+                        <input type="email" id="email" name="email" disabled placeholder="Email tidak dapat diubah">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Nomor WhatsApp</label>
+                        <input type="tel" id="phone" name="phone" placeholder="081234567890">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address">Alamat (Opsional)</label>
+                        <input type="text" id="address" name="address" placeholder="Masukkan alamat lengkap">
+                    </div>
+
+                    <button type="submit" class="btn-primary btn-save">
+                        <i class="fas fa-save"></i> Simpan Perubahan
+                    </button>
+                </form>
+
+                <div class="password-section">
+                    <h3><i class="fas fa-key"></i> Ganti Password</h3>
+                    <form id="passwordForm">
+                        <div class="form-group">
+                            <label for="currentPassword">Password Saat Ini <span class="required">*</span></label>
+                            <input type="password" id="currentPassword" name="currentPassword" placeholder="Masukkan password saat ini" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="newPassword">Password Baru <span class="required">*</span></label>
+                                <input type="password" id="newPassword" name="newPassword" placeholder="Minimal 6 karakter" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="confirmPassword">Konfirmasi Password Baru <span class="required">*</span></label>
+                                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Ulangi password baru" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-secondary" style="width: 100%; justify-content: center;">
+                            <i class="fas fa-exchange-alt"></i> Ganti Password
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL PILIH AVATAR KARAKTER -->
+    <div id="avatarModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-images"></i> Pilih Avatar Karakter</h3>
+                <button class="modal-close" onclick="closeAvatarModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="avatar-grid" id="avatarGrid"></div>
+        </div>
+    </div>
+
+    <script src="../client/js/main.js"></script>
+    
+    <script>
+        // ========== CEK LOGIN ==========
+        const session = JSON.parse(localStorage.getItem('regalstudio_session') || sessionStorage.getItem('regalstudio_session') || 'null');
+        
+        if (!session || !session.email) {
+            localStorage.setItem('redirect_after_login', window.location.href);
+            window.location.href = '../client/login.html';
+        }
+
+        // Daftar avatar karakter (Font Awesome)
+        const avatarOptions = [
+            { icon: 'fas fa-user', name: 'Default', color: '#8B5CF6' },
+            { icon: 'fas fa-user-astronaut', name: 'Astronaut', color: '#0EA5E9' },
+            { icon: 'fas fa-user-ninja', name: 'Ninja', color: '#4C1D95' },
+            { icon: 'fas fa-user-graduate', name: 'Graduate', color: '#10B981' },
+            { icon: 'fas fa-user-md', name: 'Doctor', color: '#3B82F6' },
+            { icon: 'fas fa-user-tie', name: 'CEO', color: '#1E293B' },
+            { icon: 'fas fa-user-secret', name: 'Agent', color: '#334155' },
+            { icon: 'fas fa-user-cog', name: 'Engineer', color: '#F59E0B' },
+            { icon: 'fas fa-code', name: 'Programmer', color: '#8B5CF6' },
+            { icon: 'fas fa-palette', name: 'Artist', color: '#EC4899' },
+            { icon: 'fas fa-rocket', name: 'Rocket', color: '#EF4444' },
+            { icon: 'fas fa-crown', name: 'King', color: '#F59E0B' },
+            { icon: 'fas fa-gem', name: 'Queen', color: '#EC4899' },
+            { icon: 'fas fa-brain', name: 'Genius', color: '#06B6D4' },
+            { icon: 'fas fa-dragon', name: 'Dragon', color: '#EF4444' },
+            { icon: 'fas fa-mask', name: 'Hero', color: '#8B5CF6' },
+            { icon: 'fas fa-hat-wizard', name: 'Wizard', color: '#7C3AED' },
+            { icon: 'fas fa-robot', name: 'Robot', color: '#64748B' },
+            { icon: 'fas fa-ghost', name: 'Ghost', color: '#A78BFA' },
+            { icon: 'fas fa-cat', name: 'Cat', color: '#F97316' },
+            { icon: 'fas fa-dog', name: 'Dog', color: '#D97706' },
+            { icon: 'fas fa-heart', name: 'Heart', color: '#EF4444' },
+            { icon: 'fas fa-star', name: 'Star', color: '#FBBF24' },
+            { icon: 'fas fa-bolt', name: 'Lightning', color: '#F59E0B' }
+        ];
+
+        // ========== FUNGSI ==========
+        function showAlert(message, type) {
+            const alertDiv = document.getElementById('alertMessage');
+            alertDiv.innerHTML = `<div class="alert alert-${type}"><i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${message}</div>`;
+            setTimeout(() => {
+                alertDiv.innerHTML = '';
+            }, 3000);
+        }
+
+        function hashPassword(password) {
+            let hash = 0;
+            for (let i = 0; i < password.length; i++) {
+                const char = password.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return hash.toString();
+        }
+
+        function resizeImage(file, callback) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const MAX_SIZE = 200;
+                    let width = img.width;
+                    let height = img.height;
+                    
+                    if (width > height) {
+                        if (width > MAX_SIZE) {
+                            height *= MAX_SIZE / width;
+                            width = MAX_SIZE;
+                        }
+                    } else {
+                        if (height > MAX_SIZE) {
+                            width *= MAX_SIZE / height;
+                            height = MAX_SIZE;
+                        }
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    const base64 = canvas.toDataURL('image/jpeg', 0.7);
+                    callback(base64);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function updateAvatarDisplay(avatarData, isIcon = false) {
+            const avatarPreview = document.getElementById('avatarPreview');
+            if (avatarData && !isIcon && avatarData.startsWith('data:image')) {
+                avatarPreview.innerHTML = `<img src="${avatarData}" alt="Avatar">`;
+            } else if (avatarData && isIcon) {
+                avatarPreview.innerHTML = `<i class="${avatarData}" style="font-size: 3.5rem;"></i>`;
+            } else {
+                avatarPreview.innerHTML = '<i class="fas fa-user"></i>';
+            }
+        }
+
+        function saveAvatar(avatarData, isIcon = false) {
+            let users = JSON.parse(localStorage.getItem('regalstudio_users') || '[]');
+            const userIndex = users.findIndex(u => u.email === session.email);
+            
+            if (userIndex !== -1) {
+                if (isIcon) {
+                    users[userIndex].avatarIcon = avatarData;
+                    users[userIndex].avatar = null;
+                } else {
+                    users[userIndex].avatar = avatarData;
+                    users[userIndex].avatarIcon = null;
+                }
+                localStorage.setItem('regalstudio_users', JSON.stringify(users));
+                updateAvatarDisplay(avatarData, isIcon);
+                showAlert('Avatar berhasil diubah!', 'success');
+            }
+        }
+
+        function loadProfile() {
+            const users = JSON.parse(localStorage.getItem('regalstudio_users') || '[]');
+            const user = users.find(u => u.email === session.email);
+
+            const fullname = user?.name || session.name || '';
+            const phone = user?.phone || '';
+            const address = user?.address || '';
+
+            document.getElementById('fullname').value = fullname;
+            document.getElementById('email').value = session.email;
+            document.getElementById('phone').value = phone;
+            document.getElementById('address').value = address;
+            
+            document.getElementById('displayName').innerText = fullname || session.email.split('@')[0];
+            document.getElementById('displayEmail').innerText = session.email;
+            
+            if (user?.avatar) {
+                updateAvatarDisplay(user.avatar, false);
+            } else if (user?.avatarIcon) {
+                updateAvatarDisplay(user.avatarIcon, true);
+            } else {
+                updateAvatarDisplay(null, false);
+            }
+        }
+
+        // Avatar upload handler
+        document.getElementById('avatarWrapper')?.addEventListener('click', () => {
+            document.getElementById('avatarInput').click();
+        });
+
+        document.getElementById('avatarInput')?.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            if (file.size > 1 * 1024 * 1024) {
+                showAlert('Ukuran file maksimal 1MB!', 'error');
+                return;
+            }
+            
+            if (!file.type.match('image.*')) {
+                showAlert('Hanya file gambar yang diperbolehkan!', 'error');
+                return;
+            }
+            
+            resizeImage(file, (base64) => {
+                saveAvatar(base64, false);
+            });
+        });
+
+        // Delete avatar
+        function deleteAvatar() {
+            if (confirm('Yakin ingin menghapus foto profil? Akan kembali ke avatar default.')) {
+                let users = JSON.parse(localStorage.getItem('regalstudio_users') || '[]');
+                const userIndex = users.findIndex(u => u.email === session.email);
+                if (userIndex !== -1) {
+                    users[userIndex].avatar = null;
+                    users[userIndex].avatarIcon = 'fas fa-user';
+                    localStorage.setItem('regalstudio_users', JSON.stringify(users));
+                    updateAvatarDisplay('fas fa-user', true);
+                    showAlert('Foto profil berhasil dihapus!', 'success');
+                }
+            }
+        }
+
+        // Open avatar modal
+        function openAvatarModal() {
+            const modal = document.getElementById('avatarModal');
+            const avatarGrid = document.getElementById('avatarGrid');
+            avatarGrid.innerHTML = avatarOptions.map(opt => `
+                <div class="avatar-option" onclick="selectIconAvatar('${opt.icon}', '${opt.name}')" style="background: ${opt.color}15;">
+                    <div class="avatar-icon" style="color: ${opt.color}"><i class="${opt.icon}"></i></div>
+                    <div class="avatar-name" style="color: ${opt.color};">${opt.name}</div>
+                </div>
+            `).join('');
+            modal.classList.add('show');
+        }
+
+        function selectIconAvatar(iconClass, name) {
+            saveAvatar(iconClass, true);
+            closeAvatarModal();
+            showAlert(`Avatar ${name} berhasil dipilih!`, 'success');
+        }
+
+        function closeAvatarModal() {
+            document.getElementById('avatarModal').classList.remove('show');
+        }
+
+        // Save profile
+        document.getElementById('profileForm')?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const fullname = document.getElementById('fullname').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const address = document.getElementById('address').value.trim();
+
+            if (!fullname) {
+                showAlert('Nama lengkap tidak boleh kosong!', 'error');
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('regalstudio_users') || '[]');
+            const userIndex = users.findIndex(u => u.email === session.email);
+            const existingAvatar = userIndex !== -1 ? users[userIndex].avatar : null;
+            const existingAvatarIcon = userIndex !== -1 ? users[userIndex].avatarIcon : null;
+
+            if (userIndex !== -1) {
+                users[userIndex].name = fullname;
+                users[userIndex].phone = phone;
+                users[userIndex].address = address;
+                if (existingAvatar) users[userIndex].avatar = existingAvatar;
+                if (existingAvatarIcon) users[userIndex].avatarIcon = existingAvatarIcon;
+            } else {
+                users.push({
+                    id: Date.now(),
+                    email: session.email,
+                    name: fullname,
+                    phone: phone,
+                    address: address,
+                    avatar: null,
+                    avatarIcon: null,
+                    password: '',
+                    role: 'user',
+                    createdAt: new Date().toISOString()
+                });
+            }
+
+            localStorage.setItem('regalstudio_users', JSON.stringify(users));
+
+            // Update session
+            const updatedSession = { ...session, name: fullname };
+            if (localStorage.getItem('regalstudio_session')) {
+                localStorage.setItem('regalstudio_session', JSON.stringify(updatedSession));
+            }
+            if (sessionStorage.getItem('regalstudio_session')) {
+                sessionStorage.setItem('regalstudio_session', JSON.stringify(updatedSession));
+            }
+
+            document.getElementById('displayName').innerText = fullname;
+            showAlert('Profil berhasil diperbarui!', 'success');
+        });
+
+        // Change password
+        document.getElementById('passwordForm')?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                showAlert('Harap isi semua field password!', 'error');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                showAlert('Password baru minimal 6 karakter!', 'error');
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                showAlert('Password baru dan konfirmasi tidak cocok!', 'error');
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('regalstudio_users') || '[]');
+            const userIndex = users.findIndex(u => u.email === session.email);
+            const hashedCurrent = hashPassword(currentPassword);
+
+            if (userIndex === -1 || users[userIndex].password !== hashedCurrent) {
+                showAlert('Password saat ini salah!', 'error');
+                return;
+            }
+
+            users[userIndex].password = hashPassword(newPassword);
+            localStorage.setItem('regalstudio_users', JSON.stringify(users));
+
+            document.getElementById('passwordForm').reset();
+            showAlert('Password berhasil diubah! Silakan login kembali.', 'success');
+
+            setTimeout(() => {
+                localStorage.removeItem('regalstudio_session');
+                sessionStorage.removeItem('regalstudio_session');
+                window.location.href = '../client/login.html';
+            }, 2000);
+        });
+
+        // Logout
+        document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('regalstudio_session');
+            sessionStorage.removeItem('regalstudio_session');
+            window.location.href = '../client/login.html';
+        });
+
+        // Load user navbar
+        if (typeof loadUserNavbar === 'function') {
+            loadUserNavbar();
+        }
+
+        // Initialize
+        loadProfile();
+
+        document.getElementById('selectAvatarBtn')?.addEventListener('click', openAvatarModal);
+        document.getElementById('deleteAvatarBtn')?.addEventListener('click', deleteAvatar);
+        
+        window.selectIconAvatar = selectIconAvatar;
+        window.closeAvatarModal = closeAvatarModal;
+    </script>
+</body>
+</html>

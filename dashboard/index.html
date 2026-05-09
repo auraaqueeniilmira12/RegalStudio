@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - RegalStudio</title>
+    <link rel="stylesheet" href="../client/css/style.css">
+    <link rel="stylesheet" href="../client/css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+            padding-top: 80px;
+        }
+        .sidebar {
+            width: 280px;
+            background: var(--bg-card);
+            border-right: 1px solid var(--border-color);
+            padding: 2rem 1.5rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        .sidebar-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 2rem;
+        }
+        .sidebar-menu {
+            list-style: none;
+        }
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+        }
+        .sidebar-menu li a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .sidebar-menu li a:hover,
+        .sidebar-menu li a.active {
+            background: var(--primary);
+            color: white;
+        }
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 2rem;
+        }
+        .page-title {
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .btn-back {
+            background: transparent;
+            border: 1px solid var(--gray-light);
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: var(--dark);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-back:hover {
+            background: var(--bg-light);
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(139, 92, 246, 0.1);
+            transition: all 0.3s;
+        }
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+        .stat-card i {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+        }
+        .stat-card .stat-number {
+            font-size: 1.75rem;
+            font-weight: 800;
+        }
+        .stat-card .stat-label {
+            font-size: 0.875rem;
+            color: var(--gray);
+        }
+        .recent-orders {
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+        }
+        .recent-orders h3 {
+            margin-bottom: 1rem;
+        }
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow-x: auto;
+            display: block;
+        }
+        .orders-table th,
+        .orders-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .orders-table th {
+            background: var(--bg-light);
+            font-weight: 600;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .status-pending { background: #F59E0B; color: white; }
+        .status-paid { background: #3B82F6; color: white; }
+        .status-process { background: #8B5CF6; color: white; }
+        .status-done { background: #10B981; color: white; }
+        .status-cancelled { background: #EF4444; color: white; }
+        .btn-view {
+            padding: 0.25rem 0.75rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+        .btn-view:hover {
+            background: var(--primary-dark);
+        }
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+        }
+        .empty-state i {
+            font-size: 3rem;
+            color: var(--gray-light);
+            margin-bottom: 1rem;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                z-index: 1000;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .page-title {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== NAVBAR ==================== -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <h2>RegalStudio</h2>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="../client/index.html">Beranda</a></li>
+                <li><a href="../client/services.html">Layanan</a></li>
+                <li><a href="../client/portfolio.html">Portofolio</a></li>
+                <li><a href="../client/ebook.html">E-book</a></li>
+                <li><a href="../client/contact.html">Kontak</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="../client/login.html" class="btn-login"><i class="fas fa-user"></i> Masuk</a>
+                <div class="hamburger" id="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ==================== DASHBOARD CONTENT ==================== -->
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">RegalStudio</div>
+            <ul class="sidebar-menu">
+                <li><a href="index.html" class="active"><i class="fas fa-tachometer-alt"></i> Overview</a></li>
+                <li><a href="orders.html"><i class="fas fa-shopping-bag"></i> Pesanan Saya</a></li>
+                <li><a href="profile.html"><i class="fas fa-user"></i> Profil Saya</a></li>
+                <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="page-title">
+                <h1><i class="fas fa-tachometer-alt"></i> Dashboard</h1>
+                <a href="../client/index.html" class="btn-back">
+                    <i class="fas fa-arrow-left"></i> Kembali ke Beranda
+                </a>
+            </div>
+
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
+                    <i class="fas fa-shopping-bag"></i>
+                    <div class="stat-number" id="totalOrders">0</div>
+                    <div class="stat-label">Total Pesanan</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-clock"></i>
+                    <div class="stat-number" id="pendingOrders">0</div>
+                    <div class="stat-label">Menunggu Bayar</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-spinner fa-pulse"></i>
+                    <div class="stat-number" id="processOrders">0</div>
+                    <div class="stat-label">Sedang Diproses</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-check-circle"></i>
+                    <div class="stat-number" id="doneOrders">0</div>
+                    <div class="stat-label">Selesai</div>
+                </div>
+            </div>
+
+            <div class="recent-orders">
+                <h3><i class="fas fa-history"></i> Pesanan Terbaru</h3>
+                <div id="recentOrdersList">
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <p>Belum ada pesanan</p>
+                        <a href="../client/services.html" class="btn-primary" style="margin-top: 1rem; display: inline-block;">
+                            <i class="fas fa-shopping-bag"></i> Pesan Sekarang
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../client/js/main.js"></script>
+    
+    <script>
+        // ========== CEK LOGIN ==========
+        const session = JSON.parse(localStorage.getItem('regalstudio_session') || sessionStorage.getItem('regalstudio_session') || 'null');
+        
+        if (!session || !session.email) {
+            localStorage.setItem('redirect_after_login', window.location.href);
+            window.location.href = '../client/login.html';
+        }
+
+        // ========== FUNGSI ==========
+        function formatPrice(price) {
+            return 'Rp ' + price.toLocaleString('id-ID');
+        }
+
+        function getStatusBadge(status) {
+            const badges = {
+                'pending': '<span class="status-badge status-pending"><i class="fas fa-clock"></i> Menunggu Bayar</span>',
+                'paid': '<span class="status-badge status-paid"><i class="fas fa-check-circle"></i> Verifikasi</span>',
+                'process': '<span class="status-badge status-process"><i class="fas fa-spinner"></i> Diproses</span>',
+                'done': '<span class="status-badge status-done"><i class="fas fa-trophy"></i> Selesai</span>',
+                'cancelled': '<span class="status-badge status-cancelled"><i class="fas fa-times"></i> Dibatalkan</span>'
+            };
+            return badges[status] || badges['pending'];
+        }
+
+        function loadDashboard() {
+            const orders = JSON.parse(localStorage.getItem('regalstudio_orders') || '[]');
+            const userOrders = orders.filter(o => o.customerEmail === session.email);
+            
+            // Stats
+            document.getElementById('totalOrders').innerText = userOrders.length;
+            document.getElementById('pendingOrders').innerText = userOrders.filter(o => o.status === 'pending').length;
+            document.getElementById('processOrders').innerText = userOrders.filter(o => o.status === 'process').length;
+            document.getElementById('doneOrders').innerText = userOrders.filter(o => o.status === 'done').length;
+            
+            // Recent orders (last 5)
+            const recentOrders = [...userOrders].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+            const container = document.getElementById('recentOrdersList');
+            
+            if (recentOrders.length === 0) {
+                container.innerHTML = `<div class="empty-state"><i class="fas fa-inbox"></i><p>Belum ada pesanan</p><a href="../client/services.html" class="btn-primary" style="margin-top: 1rem; display: inline-block;"><i class="fas fa-shopping-bag"></i> Pesan Sekarang</a></div>`;
+                return;
+            }
+            
+            let html = `
+                <table class="orders-table">
+                    <thead>
+                        <tr>
+                            <th>No. Order</th>
+                            <th>Layanan</th>
+                            <th>Tanggal</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Aksi</th>
+                        </thead>
+                    <tbody>
+            `;
+            recentOrders.forEach(order => {
+                let itemName = '';
+                if (order.items && order.items.length > 0) {
+                    itemName = order.items.map(i => i.name).join(', ');
+                    if (itemName.length > 30) itemName = itemName.substring(0, 30) + '...';
+                } else {
+                    itemName = order.serviceName;
+                }
+                
+                html += `
+                    <tr>
+                        <td>#REG-${order.id}</td>
+                        <td>${itemName}</td>
+                        <td>${new Date(order.date).toLocaleDateString('id-ID')}</td>
+                        <td>${formatPrice(order.totalPrice || 0)}</td>
+                        <td>${getStatusBadge(order.status)}</span>${order.result_file ? '<br><span style="font-size:0.6rem; color:#10B981;"><i class="fas fa-check-circle"></i> Hasil ada</span>' : ''}</td>
+                        <td><button class="btn-view" onclick="window.location.href='orders.html'"><i class="fas fa-eye"></i> Detail</button></td>
+                    </tr>
+                `;
+            });
+            html += `</tbody></table>`;
+            if (userOrders.length > 5) {
+                html += `<div style="text-align: center; margin-top: 1rem;"><a href="orders.html" style="color: var(--primary);"><i class="fas fa-arrow-right"></i> Lihat semua pesanan</a></div>`;
+            }
+            container.innerHTML = html;
+        }
+
+        // Load user navbar
+        if (typeof loadUserNavbar === 'function') {
+            loadUserNavbar();
+        }
+
+        document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('regalstudio_session');
+            sessionStorage.removeItem('regalstudio_session');
+            window.location.href = '../client/login.html';
+        });
+
+        loadDashboard();
+    </script>
+</body>
+</html>

@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Konfirmasi Order - RegalStudio</title>
+    
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    
+    <style>
+        .confirmation-hero {
+            padding: 120px 0 50px;
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: var(--white);
+            text-align: center;
+        }
+        
+        .confirmation-hero i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .confirmation-hero h1 {
+            color: var(--white);
+            margin-bottom: 0.5rem;
+        }
+        
+        .confirmation-content {
+            padding: 60px 0;
+        }
+        
+        .confirmation-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 3rem;
+        }
+        
+        .info-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-xl);
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 2rem;
+            border: 1px solid rgba(139, 92, 246, 0.1);
+        }
+        
+        .info-card h3 {
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--primary);
+            display: inline-block;
+        }
+        
+        .order-detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--bg-light);
+        }
+        
+        .order-detail-row:last-child {
+            border-bottom: none;
+        }
+        
+        .order-detail-label {
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .order-detail-value {
+            color: var(--gray);
+            text-align: right;
+        }
+        
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .payment-method {
+            background: var(--bg-light);
+            border-radius: var(--radius-lg);
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            border: 2px solid transparent;
+        }
+        
+        .payment-method:hover,
+        .payment-method.selected {
+            border-color: var(--primary);
+            background: rgba(139, 92, 246, 0.1);
+        }
+        
+        .payment-method i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        .payment-method .method-name {
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .payment-details {
+            background: var(--bg-light);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            display: none;
+        }
+        
+        .payment-details.active {
+            display: block;
+        }
+        
+        .ewallet-account {
+            font-family: monospace;
+            font-size: 1rem;
+            font-weight: 700;
+            background: var(--bg-white);
+            padding: 0.5rem;
+            border-radius: var(--radius-md);
+            text-align: center;
+            letter-spacing: 2px;
+            margin: 0.5rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .qris-container {
+            text-align: center;
+            padding: 1rem;
+        }
+        
+        .qris-image {
+            max-width: 200px;
+            width: 100%;
+            margin: 0 auto;
+            display: block;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .qris-placeholder {
+            width: 200px;
+            height: 200px;
+            background: white;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+            box-shadow: var(--shadow-md);
+        }
+        
+        .qris-placeholder i {
+            font-size: 5rem;
+            color: var(--primary);
+            margin: 0;
+        }
+        
+        .upload-area {
+            border: 2px dashed var(--gray-light);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            text-align: center;
+            margin-top: 1.5rem;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+        
+        .upload-area:hover {
+            border-color: var(--primary);
+            background: rgba(139, 92, 246, 0.05);
+        }
+        
+        .upload-area i {
+            font-size: 2rem;
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+        }
+        
+        .upload-area p {
+            margin-bottom: 0;
+            font-size: 0.875rem;
+        }
+        
+        .file-info {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: var(--bg-light);
+            border-radius: var(--radius-md);
+            display: none;
+        }
+        
+        .file-info.show {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .btn-wa {
+            background: #25D366;
+            color: white;
+            border: none;
+        }
+        
+        .btn-wa:hover {
+            background: #128C7E;
+            transform: translateY(-2px);
+        }
+        
+        .order-summary {
+            position: sticky;
+            top: 100px;
+        }
+        
+        .total-price {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 1rem 0;
+        }
+        
+        .note {
+            background: rgba(245, 158, 11, 0.1);
+            padding: 1rem;
+            border-radius: var(--radius-lg);
+            margin-top: 1rem;
+            font-size: 0.875rem;
+        }
+        
+        .note i {
+            color: var(--accent);
+            margin-right: 0.5rem;
+        }
+        
+        .copy-btn {
+            background: transparent;
+            border: 1px solid var(--gray-light);
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 0.7rem;
+            margin-left: 0.5rem;
+        }
+        
+        .copy-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-block {
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .preview-image {
+            max-width: 100%;
+            max-height: 200px;
+            margin-top: 0.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        
+        @media (max-width: 768px) {
+            .confirmation-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .payment-methods {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.5rem;
+            }
+            
+            .ewallet-account {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="logo"><h2>RegalStudio</h2></div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html">Beranda</a></li>
+                <li><a href="services.html">Layanan</a></li>
+                <li><a href="portfolio.html">Portofolio</a></li>
+                <li><a href="ebook.html">E-book</a></li>
+                <li><a href="contact.html">Kontak</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="login.html" class="btn-login"><i class="fas fa-user"></i> Masuk</a>
+                <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="confirmation-hero">
+        <div class="container">
+            <i class="fas fa-check-circle"></i>
+            <h1>Order Berhasil!</h1>
+            <p>Terima kasih telah memesan layanan di RegalStudio</p>
+        </div>
+    </section>
+
+    <section class="confirmation-content">
+        <div class="container">
+            <div class="confirmation-grid">
+                <div>
+                    <div class="info-card">
+                        <h3><i class="fas fa-receipt"></i> Detail Pesanan</h3>
+                        <div id="orderDetails"></div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3><i class="fas fa-credit-card"></i> Metode Pembayaran</h3>
+                        
+                        <div class="payment-methods">
+                            <div class="payment-method" data-method="dana">
+                                <i class="fab fa-dana"></i>
+                                <span class="method-name">DANA</span>
+                            </div>
+                            <div class="payment-method" data-method="ovo">
+                                <i class="fab fa-ovo"></i>
+                                <span class="method-name">OVO</span>
+                            </div>
+                            <div class="payment-method" data-method="gopay">
+                                <i class="fab fa-gopay"></i>
+                                <span class="method-name">GoPay</span>
+                            </div>
+                            <div class="payment-method" data-method="qris">
+                                <i class="fas fa-qrcode"></i>
+                                <span class="method-name">QRIS</span>
+                            </div>
+                        </div>
+                        
+                        <!-- DANA DETAILS -->
+                        <div id="dana-details" class="payment-details">
+                            <p><strong><i class="fab fa-dana"></i> DANA</strong></p>
+                            <div class="ewallet-account">
+                                <span><i class="fab fa-dana"></i> No. DANA - 081234567890</span>
+                                <button class="copy-btn" onclick="copyToClipboard('081234567890')">Copy</button>
+                            </div>
+                            <p class="note"><i class="fas fa-info-circle"></i> Transfer ke nomor DANA di atas, lalu upload bukti transfer</p>
+                        </div>
+                        
+                        <!-- OVO DETAILS -->
+                        <div id="ovo-details" class="payment-details">
+                            <p><strong><i class="fab fa-ovo"></i> OVO</strong></p>
+                            <div class="ewallet-account">
+                                <span><i class="fab fa-ovo"></i> No. OVO - 081234567890</span>
+                                <button class="copy-btn" onclick="copyToClipboard('081234567890')">Copy</button>
+                            </div>
+                            <p class="note"><i class="fas fa-info-circle"></i> Transfer ke nomor OVO di atas, lalu upload bukti transfer</p>
+                        </div>
+                        
+                        <!-- GoPay DETAILS -->
+                        <div id="gopay-details" class="payment-details">
+                            <p><strong><i class="fab fa-gopay"></i> GoPay</strong></p>
+                            <div class="ewallet-account">
+                                <span><i class="fab fa-gopay"></i> No. GoPay - 081234567890</span>
+                                <button class="copy-btn" onclick="copyToClipboard('081234567890')">Copy</button>
+                            </div>
+                            <p class="note"><i class="fas fa-info-circle"></i> Transfer ke nomor GoPay di atas, lalu upload bukti transfer</p>
+                        </div>
+                        
+                        <!-- QRIS DETAILS -->
+                        <div id="qris-details" class="payment-details">
+                            <p><strong><i class="fas fa-qrcode"></i> QRIS</strong></p>
+                            <div class="qris-container">
+                                <img src="images/qris-code.png" alt="QRIS Code" class="qris-image" onerror="this.style.display='none'; document.getElementById('qrisPlaceholder').style.display='flex';">
+                                <div id="qrisPlaceholder" class="qris-placeholder" style="display: none;">
+                                    <i class="fas fa-qrcode"></i>
+                                </div>
+                                <p class="note" style="margin-top: 1rem;">
+                                    <i class="fas fa-info-circle"></i> Scan QR Code di atas<br>
+                                    <strong>Nominal: Rp <span id="qrisAmount">0</span></strong>
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- Upload Bukti Transfer -->
+                        <div class="upload-area" id="uploadArea">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Klik atau drag & drop untuk upload bukti transfer</p>
+                            <p style="font-size: 0.7rem;">Format: JPG, PNG (Max 2MB)</p>
+                            <input type="file" id="paymentProof" accept="image/jpeg,image/png" style="display: none;">
+                        </div>
+                        <div class="file-info" id="fileInfo">
+                            <span><i class="fas fa-file-image"></i> <span id="fileName"></span></span>
+                            <button class="copy-btn" id="removeFile" style="background: #EF4444; color: white;">Hapus</button>
+                        </div>
+                        <div id="imagePreview" style="margin-top: 0.5rem; text-align: center;"></div>
+                        
+                        <button class="btn-primary" id="confirmPaymentBtn" style="margin-top: 1.5rem; width: 100%; justify-content: center;">
+                            <i class="fas fa-check-circle"></i> Konfirmasi Pembayaran
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="order-summary">
+                    <div class="info-card">
+                        <h3><i class="fas fa-chart-line"></i> Ringkasan Order</h3>
+                        <div id="orderSummary"></div>
+                        <div class="total-price" id="totalPrice">Rp 0</div>
+                        <a href="https://wa.me/6281234567890?text=Halo%20RegalStudio%2C%20saya%20ingin%20konfirmasi%20pembayaran" target="_blank" class="btn-wa btn-primary" style="background: #25D366; margin-bottom: 1rem; width: 100%; justify-content: center;">
+                            <i class="fab fa-whatsapp"></i> Konfirmasi via WhatsApp
+                        </a>
+                        <a href="services.html" class="btn-secondary" style="width: 100%; justify-content: center;">Pesan Layanan Lain</a>
+                        <div class="note"><i class="fas fa-clock"></i> <strong>Batas Pembayaran:</strong> <span id="paymentDeadline"></span></div>
+                    </div>
+                    <div class="info-card">
+                        <h3><i class="fas fa-headset"></i> Butuh Bantuan?</h3>
+                        <p><i class="fab fa-whatsapp"></i> <strong>+62 812 3456 7890</strong></p>
+                        <p><i class="fas fa-envelope"></i> hello@regalstudio.id</p>
+                        <p>Jam operasional: Senin - Jumat, 09.00 - 17.00</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-col">
+                <h3>RegalStudio</h3>
+                <p>Solusi digital profesional untuk website, desain, edit video, writer, dan e-book berkualitas.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Layanan</h4>
+                <ul>
+                    <li><a href="service-detail.html?id=1"><i class="fas fa-code"></i> Jasa Website</a></li>
+                    <li><a href="service-detail.html?id=4"><i class="fas fa-palette"></i> Jasa Desain</a></li>
+                    <li><a href="service-detail.html?id=7"><i class="fas fa-film"></i> Jasa Edit Video</a></li>
+                    <li><a href="service-detail.html?id=10"><i class="fas fa-feather-alt"></i> Jasa Writer</a></li>
+                    <li><a href="ebook.html"><i class="fas fa-book"></i> E-book</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Perusahaan</h4>
+                <ul>
+                    <li><a href="about.html"><i class="fas fa-info-circle"></i> Tentang Kami</a></li>
+                    <li><a href="portfolio.html"><i class="fas fa-folder-open"></i> Portofolio</a></li>
+                    <li><a href="contact.html"><i class="fas fa-envelope"></i> Kontak</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Kontak</h4>
+                <ul>
+                    <li><i class="fas fa-envelope"></i> hello@regalstudio.id</li>
+                    <li><i class="fas fa-phone"></i> +62 812 3456 7890</li>
+                    <li><i class="fas fa-clock"></i> Senin - Jumat: 09.00 - 17.00</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 RegalStudio. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    
+    <script>
+        let currentOrder = null;
+        let selectedMethod = 'dana';
+        let uploadedFileBase64 = null;
+        
+        function getOrderById(orderId) {
+            const orders = JSON.parse(localStorage.getItem('regalstudio_orders') || '[]');
+            return orders.find(o => o.id == orderId);
+        }
+        
+        function formatPrice(price) {
+            return 'Rp ' + price.toLocaleString('id-ID');
+        }
+        
+        function renderOrderDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const orderId = urlParams.get('orderId');
+            
+            if (orderId) {
+                currentOrder = getOrderById(orderId);
+            }
+            
+            if (!currentOrder) {
+                window.location.href = 'services.html';
+                return;
+            }
+            
+            let itemsHtml = '';
+            if (currentOrder.items && currentOrder.items.length > 0) {
+                itemsHtml = currentOrder.items.map(item => `
+                    <div class="order-detail-row">
+                        <span class="order-detail-label">${escapeHtml(item.name)} ${item.quantity > 1 ? `(x${item.quantity})` : ''}</span>
+                        <span class="order-detail-value">${formatPrice(item.price * (item.quantity || 1))}</span>
+                    </div>
+                `).join('');
+            } else if (currentOrder.serviceName) {
+                itemsHtml = `
+                    <div class="order-detail-row">
+                        <span class="order-detail-label">${escapeHtml(currentOrder.serviceName)}</span>
+                        <span class="order-detail-value">${formatPrice(currentOrder.totalPrice || 0)}</span>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('orderDetails').innerHTML = `
+                <div class="order-detail-row"><span class="order-detail-label">Nomor Order</span><span class="order-detail-value">#REG-${currentOrder.id}</span></div>
+                ${itemsHtml}
+                <div class="order-detail-row"><span class="order-detail-label">Nama Customer</span><span class="order-detail-value">${escapeHtml(currentOrder.customerName)}</span></div>
+                <div class="order-detail-row"><span class="order-detail-label">Email</span><span class="order-detail-value">${escapeHtml(currentOrder.customerEmail)}</span></div>
+                <div class="order-detail-row"><span class="order-detail-label">WhatsApp</span><span class="order-detail-value">${escapeHtml(currentOrder.customerPhone)}</span></div>
+                <div class="order-detail-row"><span class="order-detail-label">Tanggal Order</span><span class="order-detail-value">${new Date(currentOrder.date).toLocaleString('id-ID')}</span></div>
+                ${currentOrder.notes ? `<div class="order-detail-row"><span class="order-detail-label">Catatan</span><span class="order-detail-value">${escapeHtml(currentOrder.notes)}</span></div>` : ''}
+                <div class="order-detail-row"><span class="order-detail-label">Status</span><span class="order-detail-value"><span style="background:#F59E0B;color:white;padding:0.25rem 0.75rem;border-radius:50px;font-size:0.75rem;"><i class="fas fa-clock"></i> Menunggu Pembayaran</span></span></div>
+            `;
+            
+            const totalPrice = currentOrder.totalPrice || 0;
+            document.getElementById('orderSummary').innerHTML = `
+                <div class="order-detail-row"><span class="order-detail-label">Subtotal</span><span class="order-detail-value">${formatPrice(totalPrice)}</span></div>
+                <div class="order-detail-row"><span class="order-detail-label">Biaya Admin</span><span class="order-detail-value">Rp 0</span></div>
+            `;
+            document.getElementById('totalPrice').innerHTML = formatPrice(totalPrice);
+            document.getElementById('qrisAmount').innerText = totalPrice.toLocaleString('id-ID');
+            
+            const deadline = new Date();
+            deadline.setHours(deadline.getHours() + 24);
+            document.getElementById('paymentDeadline').innerHTML = deadline.toLocaleString('id-ID', {day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
+        }
+        
+        function escapeHtml(text) {
+            if (!text) return '';
+            return String(text).replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+        
+        function setupPaymentMethods() {
+            const methods = document.querySelectorAll('.payment-method');
+            methods.forEach(method => {
+                method.addEventListener('click', function() {
+                    methods.forEach(m => m.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedMethod = this.getAttribute('data-method');
+                    
+                    document.querySelectorAll('.payment-details').forEach(detail => detail.classList.remove('active'));
+                    document.getElementById(`${selectedMethod}-details`).classList.add('active');
+                });
+            });
+            document.querySelector('.payment-method').click();
+        }
+        
+        // Convert file to base64
+        function fileToBase64(file, callback) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                callback(e.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        function setupFileUpload() {
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('paymentProof');
+            const fileInfo = document.getElementById('fileInfo');
+            const removeBtn = document.getElementById('removeFile');
+            const imagePreview = document.getElementById('imagePreview');
+            
+            uploadArea.addEventListener('click', () => fileInput.click());
+            uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.style.borderColor = 'var(--primary)'; });
+            uploadArea.addEventListener('dragleave', () => { uploadArea.style.borderColor = 'var(--gray-light)'; });
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                const file = e.dataTransfer.files[0];
+                if (file && (file.type === 'image/jpeg' || file.type === 'image/png')) handleFile(file);
+                else showNotification('Format file harus JPG atau PNG', 'error');
+            });
+            fileInput.addEventListener('change', (e) => { if(e.target.files[0]) handleFile(e.target.files[0]); });
+            removeBtn.addEventListener('click', () => { 
+                uploadedFileBase64 = null; 
+                fileInfo.classList.remove('show'); 
+                imagePreview.innerHTML = '';
+                fileInput.value = ''; 
+                showNotification('File dihapus', 'success'); 
+            });
+        }
+        
+        function handleFile(file) {
+            if (file.size > 2 * 1024 * 1024) { 
+                showNotification('Ukuran file maksimal 2MB', 'error'); 
+                return; 
+            }
+            
+            // Konversi file ke base64
+            fileToBase64(file, function(base64) {
+                uploadedFileBase64 = base64;
+                document.getElementById('fileName').innerText = file.name;
+                document.getElementById('fileInfo').classList.add('show');
+                
+                // Tampilkan preview gambar
+                const imagePreview = document.getElementById('imagePreview');
+                imagePreview.innerHTML = `<img src="${base64}" class="preview-image" alt="Preview Bukti Transfer">`;
+                showNotification('File berhasil diupload', 'success');
+            });
+        }
+        
+        function setupConfirmPayment() {
+            document.getElementById('confirmPaymentBtn').addEventListener('click', () => {
+                if (!uploadedFileBase64) { 
+                    showNotification('Silakan upload bukti pembayaran terlebih dahulu', 'error'); 
+                    return; 
+                }
+                
+                showNotification('Bukti pembayaran terkirim! Admin akan memverifikasi dalam 1x24 jam', 'success');
+                
+                const orders = JSON.parse(localStorage.getItem('regalstudio_orders') || '[]');
+                const updatedOrders = orders.map(o => {
+                    if (o.id === currentOrder.id) {
+                        return {
+                            ...o, 
+                            status: 'paid', 
+                            paymentProof: uploadedFileBase64,  // Simpan sebagai base64
+                            paymentMethod: selectedMethod
+                        };
+                    }
+                    return o;
+                });
+                localStorage.setItem('regalstudio_orders', JSON.stringify(updatedOrders));
+                
+                setTimeout(() => {
+                    window.location.href = 'order-status.html';
+                }, 2000);
+            });
+        }
+        
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${message}`;
+            notification.style.cssText = `position:fixed;bottom:20px;right:20px;background:${type === 'success' ? '#10B981' : '#EF4444'};color:white;padding:12px 24px;border-radius:12px;z-index:10000;animation:slideIn 0.3s ease;`;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+        
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text);
+            showNotification('Nomor berhasil disalin!', 'success');
+        }
+        
+        const style = document.createElement('style');
+        style.textContent = `@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }`;
+        document.head.appendChild(style);
+        
+        renderOrderDetails();
+        setupPaymentMethods();
+        setupFileUpload();
+        setupConfirmPayment();
+        window.copyToClipboard = copyToClipboard;
+    </script>
+</body>
+</html>
